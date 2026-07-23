@@ -1,0 +1,810 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>🔥 열처리 마스터</title>
+<style>
+:root{
+  --bg:#0f1216; --bg2:#171c24; --card:#1d232d; --card2:#242c38;
+  --line:#2f3a48; --ink:#eef3f8; --sub:#9fb0c3; --dim:#67788c;
+  --hot:#ff6a2b; --hot2:#ffb02e; --glow:#ff8a3d;
+  --ok:#37d67a; --no:#ff5470; --blue:#3aa0ff; --gold:#ffd24a; --purple:#b57cff;
+  --r:16px;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0}
+body{
+  font-family:"Pretendard","Malgun Gothic",system-ui,sans-serif;
+  background:radial-gradient(1200px 600px at 50% -10%,#1c2431 0%,var(--bg) 55%);
+  color:var(--ink); min-height:100vh; overflow-x:hidden;
+}
+button{font-family:inherit;cursor:pointer;border:none;color:inherit}
+.wrap{max-width:960px;margin:0 auto;padding:16px 16px 90px}
+.hidden{display:none!important}
+
+/* ===== Header ===== */
+header{position:sticky;top:0;z-index:40;background:linear-gradient(180deg,rgba(15,18,22,.96),rgba(15,18,22,.7));
+  backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.hbar{max-width:960px;margin:0 auto;display:flex;align-items:center;gap:12px;padding:12px 16px}
+.logo{font-size:1.35rem;font-weight:900;letter-spacing:-.5px;display:flex;align-items:center;gap:8px}
+.logo .fire{filter:drop-shadow(0 0 8px var(--glow))}
+.hspacer{flex:1}
+.pts{background:var(--card2);border:1px solid var(--line);border-radius:999px;padding:6px 14px;font-weight:800;font-size:.9rem;color:var(--gold)}
+.pts b{color:#fff}
+
+/* ===== Home ===== */
+.hero{text-align:center;padding:26px 10px 8px}
+.hero h1{font-size:1.9rem;margin:.2em 0;font-weight:900;letter-spacing:-1px}
+.hero p{color:var(--sub);margin:.2em 0 0;line-height:1.6}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:22px}
+@media(max-width:560px){.grid{grid-template-columns:1fr}}
+.menu{background:linear-gradient(160deg,var(--card),var(--card2));border:1px solid var(--line);
+  border-radius:var(--r);padding:20px;text-align:left;transition:.15s;position:relative;overflow:hidden}
+.menu:active{transform:scale(.98)}
+.menu:hover{border-color:var(--hot);box-shadow:0 8px 26px rgba(255,106,43,.14)}
+.menu .ic{font-size:2.1rem}
+.menu h3{margin:.4em 0 .2em;font-size:1.15rem;font-weight:800}
+.menu p{margin:0;color:var(--sub);font-size:.86rem;line-height:1.5}
+.menu .tag{position:absolute;top:14px;right:14px;font-size:.68rem;font-weight:800;padding:3px 8px;border-radius:999px}
+.tag.learn{background:rgba(58,160,255,.16);color:var(--blue)}
+.tag.sim{background:rgba(255,106,43,.18);color:var(--hot2)}
+.tag.game{background:rgba(181,124,255,.16);color:var(--purple)}
+.tag.test{background:rgba(55,214,122,.16);color:var(--ok)}
+
+/* ===== Common ===== */
+.view{animation:fade .25s ease}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.back{background:var(--card2);border:1px solid var(--line);border-radius:10px;padding:8px 14px;font-weight:700;font-size:.85rem;margin-bottom:16px;display:inline-flex;gap:6px;align-items:center}
+.secttl{font-size:1.4rem;font-weight:900;margin:6px 0 4px}
+.sectsub{color:var(--sub);margin:0 0 18px;font-size:.9rem}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:18px}
+.btn{background:linear-gradient(135deg,var(--hot),var(--hot2));color:#1a0f06;font-weight:900;
+  border-radius:12px;padding:13px 20px;font-size:1rem;box-shadow:0 6px 18px rgba(255,138,61,.25)}
+.btn:active{transform:translateY(1px)}
+.btn.ghost{background:var(--card2);color:var(--ink);border:1px solid var(--line);box-shadow:none}
+.btn.blue{background:linear-gradient(135deg,#2b7fff,#4db6ff);color:#04121f}
+.row{display:flex;gap:10px;flex-wrap:wrap}
+.pill{background:var(--card2);border:1px solid var(--line);border-radius:999px;padding:5px 12px;font-size:.78rem;font-weight:700;color:var(--sub)}
+
+/* ===== Learn ===== */
+.chips{display:flex;gap:8px;overflow-x:auto;padding:2px 0 12px;-webkit-overflow-scrolling:touch}
+.chips::-webkit-scrollbar{display:none}
+.chip{white-space:nowrap;background:var(--card2);border:1px solid var(--line);border-radius:999px;padding:8px 15px;font-weight:700;font-size:.86rem;color:var(--sub);flex:0 0 auto}
+.chip.on{background:var(--hot);color:#1a0f06;border-color:var(--hot)}
+.lesson h3{font-size:1.25rem;margin:.1em 0 .5em;color:var(--hot2)}
+.lesson p{line-height:1.75;color:var(--ink);margin:.5em 0}
+.lesson .lead{color:var(--sub)}
+.deftable{width:100%;border-collapse:collapse;margin:12px 0;font-size:.9rem}
+.deftable th,.deftable td{border:1px solid var(--line);padding:9px 10px;text-align:left;vertical-align:top}
+.deftable th{background:var(--card2);color:var(--hot2);font-weight:800;white-space:nowrap}
+.deftable tr:nth-child(even) td{background:rgba(255,255,255,.02)}
+.kbox{background:rgba(255,106,43,.08);border-left:4px solid var(--hot);border-radius:8px;padding:12px 14px;margin:14px 0;line-height:1.7}
+.kbox b{color:var(--hot2)}
+.note{background:rgba(58,160,255,.08);border-left:4px solid var(--blue);border-radius:8px;padding:12px 14px;margin:14px 0;line-height:1.7;font-size:.92rem}
+
+/* cooling speed bar */
+.speedbar{display:flex;flex-direction:column;gap:8px;margin:14px 0}
+.spr{display:flex;align-items:center;gap:10px}
+.spr .nm{width:56px;font-weight:800;font-size:.85rem}
+.spr .track{flex:1;height:16px;background:var(--card2);border-radius:999px;overflow:hidden;border:1px solid var(--line)}
+.spr .fill{height:100%;border-radius:999px;background:linear-gradient(90deg,var(--hot),var(--hot2))}
+.spr .val{width:60px;text-align:right;font-size:.78rem;color:var(--sub)}
+
+/* ===== Simulator ===== */
+.simgrid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:640px){.simgrid{grid-template-columns:1fr}}
+.simctl label{display:block;font-weight:800;font-size:.85rem;margin:14px 0 7px;color:var(--sub)}
+.seg{display:flex;gap:6px;flex-wrap:wrap}
+.seg button{flex:1;min-width:64px;background:var(--card2);border:1px solid var(--line);border-radius:10px;padding:10px 6px;font-weight:800;font-size:.82rem;color:var(--sub)}
+.seg button.on{background:var(--hot);color:#1a0f06;border-color:var(--hot)}
+.seg button.on.cool{background:var(--blue);color:#04121f;border-color:var(--blue)}
+input[type=range]{width:100%;accent-color:var(--hot);height:26px}
+.tempread{font-size:1.05rem;font-weight:900;color:var(--hot2)}
+
+/* furnace */
+.furnace{background:#0a0d11;border:1px solid var(--line);border-radius:14px;padding:16px;text-align:center;position:relative;overflow:hidden}
+.piece{width:120px;height:26px;margin:26px auto;border-radius:5px;background:#3a4453;position:relative;transition:background .4s,box-shadow .4s;border:1px solid #566}
+.piece .hole{position:absolute;top:50%;transform:translateY(-50%);width:14px;height:14px;border-radius:50%;background:#0a0d11;border:1px solid #566}
+.piece .hole.a{left:26px}.piece .hole.b{right:26px}
+.gauge{font-size:2.2rem;font-weight:900;margin:6px 0}
+.gauge small{font-size:.9rem;color:var(--sub);font-weight:700}
+.microtag{display:inline-block;padding:6px 14px;border-radius:999px;font-weight:800;font-size:.9rem;margin-top:4px}
+.hrcbig{font-size:1.05rem;font-weight:800;margin-top:10px}
+.spark{position:absolute;width:4px;height:4px;border-radius:50%;background:var(--hot2);pointer-events:none}
+#simResult{line-height:1.7}
+.diagram{width:100%;height:180px;background:#0a0d11;border:1px solid var(--line);border-radius:12px;margin-top:12px}
+
+/* ===== Game ===== */
+.gamehud{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;gap:10px}
+.hudbox{background:var(--card2);border:1px solid var(--line);border-radius:12px;padding:8px 14px;font-weight:800;text-align:center;flex:1}
+.hudbox small{display:block;color:var(--dim);font-size:.68rem;font-weight:700}
+.combo{color:var(--hot2)}
+.q{font-size:1.15rem;font-weight:800;line-height:1.5;margin:8px 0 16px;text-align:center}
+.opts{display:grid;gap:10px}
+.opt{background:var(--card2);border:1px solid var(--line);border-radius:12px;padding:15px;font-weight:700;font-size:1rem;text-align:left;transition:.12s}
+.opt:active{transform:scale(.98)}
+.opt.correct{background:rgba(55,214,122,.2);border-color:var(--ok);color:#c9ffdf}
+.opt.wrong{background:rgba(255,84,112,.18);border-color:var(--no);color:#ffd4dc}
+.progress{height:8px;background:var(--card2);border-radius:999px;overflow:hidden;margin-bottom:16px;border:1px solid var(--line)}
+.progress i{display:block;height:100%;background:linear-gradient(90deg,var(--hot),var(--hot2));transition:width .3s}
+
+/* match game */
+.matchwrap{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.mcol{display:flex;flex-direction:column;gap:10px}
+.mitem{background:var(--card2);border:1px solid var(--line);border-radius:12px;padding:14px 12px;font-weight:700;font-size:.92rem;text-align:center;transition:.12s}
+.mitem.sel{border-color:var(--hot);background:rgba(255,106,43,.15)}
+.mitem.done{opacity:.35;pointer-events:none;border-color:var(--ok)}
+
+/* result / clear */
+.result{text-align:center;padding:20px}
+.result .big{font-size:3rem;font-weight:900;margin:10px 0}
+.grade{font-size:1.3rem;font-weight:900}
+.clearbanner{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;
+  background:rgba(6,8,11,.82);z-index:80;animation:fade .3s}
+.clearbanner .txt{font-size:2.4rem;font-weight:900;color:var(--hot2);text-shadow:0 0 24px var(--glow);animation:pop .5s}
+@keyframes pop{0%{transform:scale(.4);opacity:0}60%{transform:scale(1.15)}100%{transform:scale(1);opacity:1}}
+
+/* toast */
+#toast{position:fixed;left:50%;bottom:88px;transform:translateX(-50%);background:var(--card2);border:1px solid var(--line);
+  padding:11px 20px;border-radius:999px;font-weight:800;z-index:90;opacity:0;transition:.25s;pointer-events:none;white-space:nowrap}
+#toast.show{opacity:1;bottom:100px}
+
+/* result card / submit */
+.field{margin:12px 0}
+.field label{display:block;font-weight:800;font-size:.85rem;margin-bottom:6px;color:var(--sub)}
+.field input,.field select{width:100%;background:var(--card2);border:1px solid var(--line);border-radius:10px;padding:12px;color:var(--ink);font-size:1rem;font-family:inherit}
+.numgrid{display:grid;grid-template-columns:repeat(6,1fr);gap:6px}
+.numgrid button{background:var(--card2);border:1px solid var(--line);border-radius:9px;padding:9px 0;font-weight:800;font-size:.9rem;color:var(--sub)}
+.numgrid button.on{background:var(--hot);color:#1a0f06;border-color:var(--hot)}
+#cardOut{background:linear-gradient(160deg,#fff,#f2f5f9);color:#12212f;border-radius:16px;padding:22px;margin-top:16px}
+#cardOut h3{margin:0 0 4px;color:#c0491a}
+#cardOut .crow{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px dashed #cbd5e1;font-size:.95rem}
+#cardOut .crow b{color:#0f172a}
+#cardOut .score{font-size:2rem;font-weight:900;color:#c0491a;text-align:center;margin:10px 0}
+.confetti{position:fixed;width:9px;height:14px;top:-20px;z-index:85;pointer-events:none}
+
+footer{text-align:center;color:var(--dim);font-size:.78rem;padding:24px 0 10px}
+</style>
+</head>
+<body>
+<header>
+  <div class="hbar">
+    <div class="logo"><span class="fire">🔥</span> 열처리 마스터</div>
+    <div class="hspacer"></div>
+    <div class="pts">⭐ <b id="ptsVal">0</b></div>
+  </div>
+</header>
+
+<div class="wrap">
+
+<!-- ============ HOME ============ -->
+<section id="home" class="view">
+  <div class="hero">
+    <h1>금속 열처리 <span style="color:var(--hot2)">완전정복</span></h1>
+    <p>불꽃시험 · 담금질 · 뜨임 · 조직 · 경도(HRC)<br>배우고 → 실험하고 → 게임하고 → 점검까지</p>
+  </div>
+  <div class="grid">
+    <button class="menu" onclick="go('learn')">
+      <span class="tag learn">이론</span>
+      <div class="ic">📖</div><h3>배우기</h3>
+      <p>4대 열처리·금속조직·불꽃시험·강종·실기조건을 카드로 정리</p>
+    </button>
+    <button class="menu" onclick="go('sim')">
+      <span class="tag sim">보조도구</span>
+      <div class="ic">🔥</div><h3>열처리로 시뮬레이터</h3>
+      <p>강종·온도·냉각을 골라 노(爐)를 달구고 조직·경도·선도 확인</p>
+    </button>
+    <button class="menu" onclick="go('game')">
+      <span class="tag game">게임</span>
+      <div class="ic">🎮</div><h3>훈련 게임</h3>
+      <p>냉각속도·조직·강종불꽃 퀴즈와 짝맞추기로 콤보 도전</p>
+    </button>
+    <button class="menu" onclick="go('test')">
+      <span class="tag test">제출</span>
+      <div class="ic">📝</div><h3>점검·제출</h3>
+      <p>15문항 점검 후 이름·반·번호가 담긴 결과카드 저장·제출</p>
+    </button>
+  </div>
+  <footer>열처리기능사(금속열처리작업) 수업용 · 공개문제 SM45C·SCM440 기반</footer>
+</section>
+
+<!-- ============ LEARN ============ -->
+<section id="learn" class="view hidden">
+  <button class="back" onclick="go('home')">← 홈</button>
+  <div class="secttl">📖 배우기</div>
+  <p class="sectsub">주제를 눌러 학습하세요. 다 읽으면 ⭐ 포인트를 받아요.</p>
+  <div class="chips" id="learnChips"></div>
+  <div class="card lesson" id="lessonBox"></div>
+  <div class="row" style="margin-top:16px;justify-content:space-between">
+    <button class="btn ghost" id="lprev">← 이전</button>
+    <button class="btn" id="lnext">읽음 ✓ 다음 →</button>
+  </div>
+</section>
+
+<!-- ============ SIMULATOR ============ -->
+<section id="sim" class="view hidden">
+  <button class="back" onclick="go('home')">← 홈</button>
+  <div class="secttl">🔥 열처리로 시뮬레이터</div>
+  <p class="sectsub">수업 시연용. 조건을 바꾸면 조직과 경도가 어떻게 달라지는지 보여줍니다.</p>
+  <div class="simgrid">
+    <div class="card simctl">
+      <label>① 강종 선택</label>
+      <div class="seg" id="segSteel"></div>
+      <label>② 가열 온도 <span class="tempread" id="tRead">840 ℃</span></label>
+      <input type="range" id="tRange" min="600" max="1000" step="10" value="840">
+      <label>③ 유지시간 <span class="tempread" id="hRead">30 분</span></label>
+      <input type="range" id="hRange" min="10" max="90" step="5" value="30">
+      <label>④ 냉각 방법</label>
+      <div class="seg" id="segCool"></div>
+      <button class="btn" id="runSim" style="width:100%;margin-top:18px">🔥 열처리 실행</button>
+    </div>
+    <div class="card">
+      <div class="furnace" id="furnace">
+        <div class="piece" id="piece"><span class="hole a"></span><span class="hole b"></span></div>
+        <div class="gauge" id="gaugeT">–<small> ℃</small></div>
+      </div>
+      <div id="simResult" style="margin-top:14px;text-align:center;color:var(--sub)">
+        조건을 고르고 <b style="color:var(--hot2)">열처리 실행</b>을 누르세요.
+      </div>
+      <canvas class="diagram" id="diagram" width="600" height="360"></canvas>
+    </div>
+  </div>
+</section>
+
+<!-- ============ GAME HUB ============ -->
+<section id="game" class="view hidden">
+  <button class="back" onclick="go('home')">← 홈</button>
+  <div class="secttl">🎮 훈련 게임</div>
+  <p class="sectsub">모드를 골라 도전! 연속 정답이면 콤보 보너스 ⭐</p>
+  <div class="grid">
+    <button class="menu" onclick="startQuiz('cool')">
+      <div class="ic">❄️</div><h3>냉각·경도 퀴즈</h3><p>냉각속도와 경도 관계, 4대 열처리 목적</p></button>
+    <button class="menu" onclick="startQuiz('micro')">
+      <div class="ic">🔬</div><h3>조직 퀴즈</h3><p>마르텐사이트·펄라이트 등 조직 맞히기</p></button>
+    <button class="menu" onclick="startMatch()">
+      <div class="ic">🧩</div><h3>강종 짝맞추기</h3><p>강종 기호와 이름·용도 연결</p></button>
+    <button class="menu" onclick="startQuiz('spark')">
+      <div class="ic">✨</div><h3>불꽃시험 퀴즈</h3><p>불꽃 특징으로 강종 판별</p></button>
+  </div>
+</section>
+
+<!-- game play -->
+<section id="play" class="view hidden">
+  <button class="back" onclick="go('game')">← 게임선택</button>
+  <div class="progress"><i id="qProg" style="width:0%"></i></div>
+  <div class="gamehud">
+    <div class="hudbox"><small>문제</small><span id="qNo">1/8</span></div>
+    <div class="hudbox"><small>점수</small><span id="qScore">0</span></div>
+    <div class="hudbox"><small>콤보</small><span class="combo" id="qCombo">0x</span></div>
+  </div>
+  <div class="card">
+    <div class="q" id="qText"></div>
+    <div class="opts" id="qOpts"></div>
+  </div>
+</section>
+
+<!-- match play -->
+<section id="matchplay" class="view hidden">
+  <button class="back" onclick="go('game')">← 게임선택</button>
+  <div class="gamehud">
+    <div class="hudbox"><small>맞춘 짝</small><span id="mDone">0/6</span></div>
+    <div class="hudbox"><small>시도</small><span id="mTry">0</span></div>
+  </div>
+  <div class="card">
+    <p style="text-align:center;color:var(--sub);margin:0 0 14px">왼쪽 강종기호와 오른쪽 설명을 연결하세요</p>
+    <div class="matchwrap">
+      <div class="mcol" id="mLeft"></div>
+      <div class="mcol" id="mRight"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ TEST ============ -->
+<section id="test" class="view hidden">
+  <button class="back" onclick="go('home')">← 홈</button>
+  <div class="secttl">📝 점검·제출</div>
+  <p class="sectsub">15문항을 풀고 결과카드를 저장해 제출하세요.</p>
+  <div class="card" id="testIntro">
+    <div class="field"><label>이름</label><input id="stName" placeholder="홍길동"></div>
+    <div class="field"><label>반</label>
+      <select id="stClass"><option value="">반 선택</option></select></div>
+    <div class="field"><label>번호</label><div class="numgrid" id="numGrid"></div></div>
+    <button class="btn" style="width:100%;margin-top:8px" onclick="startTest()">시작하기 →</button>
+  </div>
+
+  <div class="card hidden" id="testBox">
+    <div class="progress"><i id="tProg" style="width:0%"></i></div>
+    <div class="gamehud"><div class="hudbox"><small>문제</small><span id="tNo">1/15</span></div></div>
+    <div class="q" id="tQ"></div>
+    <div class="opts" id="tOpts"></div>
+  </div>
+
+  <div class="hidden" id="testResult"></div>
+</section>
+
+</div><!-- /wrap -->
+
+<div id="toast"></div>
+
+<script>
+/* =================== state =================== */
+const S={pts:+(localStorage.getItem('ht_pts')||0)};
+const $=id=>document.getElementById(id);
+function setPts(n){S.pts=Math.max(0,n);$('ptsVal').textContent=S.pts;localStorage.setItem('ht_pts',S.pts);}
+setPts(S.pts);
+function addPts(n){setPts(S.pts+n);}
+function go(id){document.querySelectorAll('.view').forEach(v=>v.classList.add('hidden'));$(id).classList.remove('hidden');window.scrollTo(0,0);}
+function toast(msg){const t=$('toast');t.textContent=msg;t.classList.add('show');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),1400);}
+function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+
+/* =================== LEARN =================== */
+const LESSONS=[
+{t:"열처리란?",h:"🔥 열처리란 무엇인가",html:`
+<p class="lead">열처리(Heat Treatment)는 금속을 <b>가열·유지·냉각</b>하여 원하는 성질(경도·강도·인성·조직)을 얻는 작업입니다.</p>
+<p>같은 강(鋼)이라도 <b>어떻게 데우고 어떻게 식히느냐</b>에 따라 딱딱해지기도, 부드러워지기도 합니다. 열처리의 3요소는 다음과 같습니다.</p>
+<div class="kbox"><b>① 가열온도</b> · <b>② 유지시간</b> · <b>③ 냉각속도</b> — 이 세 가지가 조직과 경도를 결정합니다.</div>
+<p>열처리기능사 실기에서는 이 원리로 <b>불꽃시험(재질판별) → 담금질 → 뜨임</b>을 수행하고, 경도(HRC)를 측정합니다.</p>`},
+
+{t:"4대 열처리",h:"⚙️ 기본 4대 열처리",html:`
+<p class="lead">가장 기본이 되는 네 가지 열처리입니다. 냉각속도의 차이로 성질이 달라집니다.</p>
+<table class="deftable">
+<tr><th>이름</th><th>가열/냉각</th><th>목적</th></tr>
+<tr><td><b>담금질</b><br>(퀜칭·소입)</td><td>A₃/A₁+30~50℃ 가열 후 <b>급냉</b>(수냉·유냉)</td><td>경도·강도를 크게 높임 (마르텐사이트 생성)</td></tr>
+<tr><td><b>뜨임</b><br>(템퍼링·소려)</td><td>담금질 후 A₁ 이하 재가열, 서냉</td><td>담금질의 <b>취성(잘 깨짐) 제거</b>·인성 회복</td></tr>
+<tr><td><b>풀림</b><br>(어닐링·소둔)</td><td>가열 후 <b>노냉</b>(아주 천천히)</td><td>재료를 연하게, 내부응력 제거·가공성↑</td></tr>
+<tr><td><b>불림</b><br>(노멀라이징·소준)</td><td>A₃/Acm+30~50℃ 가열 후 <b>공냉</b></td><td>조직을 미세·균일하게 표준화</td></tr>
+</table>
+<div class="kbox"><b>암기 팁</b> — 담금질=딱딱, 뜨임=담금질 뒤 인성회복, 풀림=말랑(노냉), 불림=조직정리(공냉)</div>`},
+
+{t:"냉각속도",h:"❄️ 냉각속도와 경도",html:`
+<p class="lead">냉각이 <b>빠를수록 단단</b>해집니다. 냉각속도 순서를 외우면 절반은 끝!</p>
+<p style="text-align:center;font-weight:800;color:var(--hot2);font-size:1.05rem">수냉 &gt; 유냉 &gt; 공냉 &gt; 노냉</p>
+<div class="speedbar" id="spb"></div>
+<div class="kbox">급냉하면 조직이 <b>마르텐사이트</b>가 되어 매우 단단하지만 잘 깨집니다(취성). 그래서 담금질 후 <b>뜨임</b>으로 인성을 살립니다.</div>
+<div class="note">⚠️ 탄소강(SM45C)은 <b>수냉</b>해야 충분히 경화되지만, 합금강(SCM440)은 <b>유냉</b>만으로도 잘 경화됩니다. 합금강을 수냉하면 <b>균열</b> 위험이 커요.</div>`},
+
+{t:"금속조직",h:"🔬 열처리로 생기는 조직",html:`
+<p class="lead">냉각속도에 따라 강 안의 조직이 달라지고, 조직이 곧 경도를 결정합니다.</p>
+<table class="deftable">
+<tr><th>조직</th><th>생기는 조건</th><th>특징</th></tr>
+<tr><td>오스테나이트</td><td>고온(A₁ 이상)에서 안정</td><td>비자성·연함. 냉각 전 상태</td></tr>
+<tr><td><b>마르텐사이트</b></td><td>급냉(담금질)</td><td>침상조직, <b>가장 단단</b>·취성 큼</td></tr>
+<tr><td>트루스타이트</td><td>유냉 정도 / 저온뜨임</td><td>마르텐사이트보다 연함</td></tr>
+<tr><td>소르바이트</td><td>공냉 정도 / 고온뜨임</td><td>강인성 우수(구조용)</td></tr>
+<tr><td>펄라이트</td><td>서냉(노냉)</td><td>페라이트+시멘타이트 층상, 연함</td></tr>
+</table>
+<div class="kbox"><b>경도 순서</b> — 마르텐사이트 &gt; 트루스타이트 &gt; 소르바이트 &gt; 펄라이트 &gt; 오스테나이트</div>`},
+
+{t:"불꽃시험",h:"✨ 불꽃시험(재질판별)",html:`
+<p class="lead">강을 그라인더에 대면 튀는 불꽃 모양으로 재질을 판별합니다. 실기 첫 과제죠.</p>
+<table class="deftable">
+<tr><th>보는 곳</th><th>의미</th></tr>
+<tr><td>유선(불꽃 줄기)</td><td>길고 밝으면 저탄소, 짧고 붉으면 고탄소·합금강</td></tr>
+<tr><td><b>파열(꽃가지)</b></td><td><b>탄소량↑ → 파열(별모양 터짐)↑</b></td></tr>
+<tr><td>색</td><td>탄소강은 밝은 주황, 고속도강은 어두운 적색</td></tr>
+</table>
+<div class="kbox"><b>핵심</b> — 파열이 많다=탄소가 많다. Cr·Mo·W 같은 <b>합금원소는 파열을 억제</b>합니다. 고속도강(SKH51)은 불꽃이 적고 끝에 <b>여우꼬리(적색 단선)</b>가 보입니다.</div>
+<div class="note">실기 예시 강종: SM45C · STD11 · STD61 · SKH51 · STC105(STC3) · STS3</div>`},
+
+{t:"강종 기호",h:"🏷️ 실기에 나오는 강종",html:`
+<p class="lead">기호(KS)를 보고 무슨 강인지 알아야 합니다.</p>
+<table class="deftable">
+<tr><th>기호</th><th>이름 / 용도</th></tr>
+<tr><td><b>SM45C</b></td><td>기계구조용 탄소강 (C 0.45%) · 축·기어</td></tr>
+<tr><td><b>SCM440</b></td><td>크롬-몰리브덴강 · 강인성 필요한 구조부품</td></tr>
+<tr><td>STC105<br>(STC3)</td><td>탄소공구강 · 줄·펀치</td></tr>
+<tr><td>STS3</td><td>합금공구강(냉간) · 게이지·다이스</td></tr>
+<tr><td>STD11</td><td>냉간금형용 다이스강 (고Cr·고탄소)</td></tr>
+<tr><td>STD61</td><td>열간금형강 (Cr-Mo-V)</td></tr>
+<tr><td>SKH51</td><td>고속도공구강(하이스) · 드릴·바이트</td></tr>
+</table>
+<div class="kbox"><b>기호 읽기</b> — S=Steel, M=기계구조용, C=탄소 / STC=탄소공구, STS=합금공구, STD=다이스, SKH=고속도</div>`},
+
+{t:"실기 조건",h:"🎯 SM45C · SCM440 실기 조건",html:`
+<p class="lead">공개문제의 요구 경도와 대표 조건입니다. (흑판 제시 방법 중 선택)</p>
+<table class="deftable">
+<tr><th></th><th>SM45C(탄소강)</th><th>SCM440(합금강)</th></tr>
+<tr><td>담금질</td><td>약 820~860℃<br><b>수냉</b></td><td>약 830~870℃<br><b>유냉</b></td></tr>
+<tr><td>퀜칭 경도</td><td><b>HRC 48 이상</b></td><td><b>HRC 46 이상</b></td></tr>
+<tr><td>뜨임</td><td>고온뜨임(≈600℃대)</td><td>중~고온뜨임(≈550℃대)</td></tr>
+<tr><td>뜨임 경도</td><td><b>HRC 18~30</b></td><td><b>HRC 28~39</b></td></tr>
+</table>
+<div class="note">뜨임 온도가 높을수록 경도는 내려가고 인성은 올라갑니다. 요구 경도범위에 맞게 뜨임온도를 선택하는 것이 핵심입니다.</div>
+<div class="kbox">실기 순서 = ① 불꽃시험 재질판별 → ② 열처리 선도 작성·제출 → ③ 담금질 → 경도3회 → ④ 뜨임 → 경도3회</div>`},
+
+{t:"열처리 선도",h:"📈 열처리 선도(가열곡선)",html:`
+<p class="lead">가로축 시간, 세로축 온도로 <b>가열 → 유지 → 냉각</b>을 그린 그래프입니다.</p>
+<p>답안지에 온도·유지시간·냉각방법을 적고 이 선도를 그립니다. 시뮬레이터에서 직접 그려지는 걸 확인해 보세요.</p>
+<div class="kbox">선도 구성 = <b>상승선(가열)</b> → <b>수평선(유지)</b> → <b>하강선(냉각)</b>. 냉각선의 기울기가 급하면 급냉(수냉), 완만하면 서냉(노냉)입니다.</div>
+<div class="note">🔥 <b>열처리로 시뮬레이터</b>로 넘어가면 조건을 바꿔가며 선도와 예상 경도를 바로 볼 수 있어요.</div>`},
+];
+let curL=0;
+function buildLearn(){
+  const c=$('learnChips');c.innerHTML='';
+  LESSONS.forEach((l,i)=>{const b=document.createElement('button');b.className='chip'+(i===curL?' on':'');b.textContent=l.t;b.onclick=()=>{curL=i;renderLesson();};c.appendChild(b);});
+}
+const learnDone=new Set(JSON.parse(localStorage.getItem('ht_learn')||'[]'));
+function renderLesson(){
+  buildLearn();
+  const l=LESSONS[curL];
+  $('lessonBox').innerHTML=`<h3>${l.h}</h3>${l.html}`;
+  if(curL===2)fillSpeedbar();
+  const chip=$('learnChips').children[curL];if(chip)chip.scrollIntoView({inline:'center',block:'nearest'});
+  $('lprev').disabled=curL===0;$('lprev').style.opacity=curL===0?.4:1;
+  $('lnext').textContent=curL===LESSONS.length-1?'끝! 완료 ✓':'읽음 ✓ 다음 →';
+}
+function fillSpeedbar(){
+  const d=[['수냉',100,'가장 빠름'],['유냉',65,'빠름'],['공냉',35,'중간'],['노냉',12,'가장 느림']];
+  $('spb').innerHTML=d.map(([n,w,v])=>`<div class="spr"><div class="nm">${n}</div><div class="track"><div class="fill" style="width:${w}%"></div></div><div class="val">${v}</div></div>`).join('');
+}
+$('lnext').onclick=()=>{
+  if(!learnDone.has(curL)){learnDone.add(curL);addPts(5);toast('+5 ⭐ 학습 완료!');localStorage.setItem('ht_learn',JSON.stringify([...learnDone]));}
+  if(curL<LESSONS.length-1){curL++;renderLesson();}else{clearBanner('📖 이론 완주!');}
+};
+$('lprev').onclick=()=>{if(curL>0){curL--;renderLesson();}};
+renderLesson();
+
+/* =================== SIMULATOR =================== */
+const STEELS={
+  'SM45C':{name:'탄소강',C:0.45,alloy:0,austen:830,best:'water',qmax:56,label:'SM45C'},
+  'SCM440':{name:'Cr-Mo강',C:0.40,alloy:1,austen:850,best:'oil',qmax:55,label:'SCM440'},
+  'STD11':{name:'다이스강',C:1.5,alloy:2,austen:1010,best:'oil',qmax:62,label:'STD11'},
+  'SKH51':{name:'고속도강',C:0.85,alloy:3,austen:1220,best:'oil',qmax:65,label:'SKH51'},
+};
+const COOLS={water:{n:'수냉',rate:1.0,c:'#3aa0ff'},oil:{n:'유냉',rate:0.7,c:'#3aa0ff'},air:{n:'공냉',rate:0.35,c:'#9fb0c3'},furnace:{n:'노냉',rate:0.12,c:'#ff8a3d'}};
+const sim={steel:'SM45C',temp:840,hold:30,cool:'water'};
+function buildSim(){
+  $('segSteel').innerHTML=Object.keys(STEELS).map(k=>`<button data-k="${k}" class="${k===sim.steel?'on':''}">${k}</button>`).join('');
+  $('segSteel').querySelectorAll('button').forEach(b=>b.onclick=()=>{sim.steel=b.dataset.k;refreshSegs();autoTemp();});
+  $('segCool').innerHTML=Object.keys(COOLS).map(k=>`<button data-k="${k}" class="cool ${k===sim.cool?'on cool':''}">${COOLS[k].n}</button>`).join('');
+  $('segCool').querySelectorAll('button').forEach(b=>b.onclick=()=>{sim.cool=b.dataset.k;refreshSegs();});
+}
+function refreshSegs(){
+  $('segSteel').querySelectorAll('button').forEach(b=>b.classList.toggle('on',b.dataset.k===sim.steel));
+  $('segCool').querySelectorAll('button').forEach(b=>{const on=b.dataset.k===sim.cool;b.classList.toggle('on',on);b.classList.toggle('cool',on);});
+}
+function autoTemp(){const a=STEELS[sim.steel].austen;sim.temp=a+10;$('tRange').value=Math.min(1000,Math.max(600,sim.temp));$('tRead').textContent=$('tRange').value+' ℃';}
+$('tRange').oninput=e=>{sim.temp=+e.target.value;$('tRead').textContent=sim.temp+' ℃';};
+$('hRange').oninput=e=>{sim.hold=+e.target.value;$('hRead').textContent=sim.hold+' 분';};
+buildSim();
+
+function tempColor(t){ // steel glow color by temp
+  if(t<500)return '#3a4453';
+  if(t<650)return '#6e2b12';
+  if(t<750)return '#a83a10';
+  if(t<850)return '#e0560f';
+  if(t<950)return '#ff8a2a';
+  return '#ffd36b';
+}
+function estimateHRC(){
+  const st=STEELS[sim.steel];
+  // austenitizing adequacy
+  const need=st.austen;
+  let adeq;
+  if(sim.temp<need-60)adeq=0.45;              // too low, under-hardened
+  else if(sim.temp<need-20)adeq=0.8;
+  else if(sim.temp<=need+90)adeq=1.0;         // good window
+  else adeq=0.9;                               // overheated (coarse grain)
+  const rate=COOLS[sim.cool].rate;
+  // hardenability: alloy needs less cooling to fully harden
+  const hardenability=[1.0,1.55,1.7,1.7][st.alloy]; // effective rate multiplier
+  let eff=Math.min(1,rate*hardenability);
+  let hrc=st.qmax*adeq*(0.35+0.65*eff);
+  // carbon floor for very low carbon impossible; here all mid/high C
+  return {hrc:Math.round(hrc),adeq,eff};
+}
+function microOf(hrc){
+  if(hrc>=55)return{n:'마르텐사이트',c:'#ff5470',d:'침상·최고경도(취성 큼)'};
+  if(hrc>=45)return{n:'마르텐사이트',c:'#ff6a2b',d:'급냉 경화조직'};
+  if(hrc>=35)return{n:'트루스타이트',c:'#ffb02e',d:'중간 경도'};
+  if(hrc>=25)return{n:'소르바이트',c:'#37d67a',d:'강인성 우수'};
+  return{n:'펄라이트',c:'#3aa0ff',d:'서냉·연질조직'};
+}
+$('runSim').onclick=runSim;
+let simBusy=false;
+function runSim(){
+  if(simBusy)return;simBusy=true;
+  const piece=$('piece'),gauge=$('gaugeT');
+  // heat up animation
+  let t=Math.max(20,sim.temp-700),target=sim.temp;
+  gauge.innerHTML=t+'<small> ℃</small>';
+  const heat=setInterval(()=>{
+    t+=Math.max(12,(target-t)*0.18);
+    if(t>=target-2){t=target;clearInterval(heat);setTimeout(hold,350);}
+    piece.style.background=tempColor(t);
+    piece.style.boxShadow=t>500?`0 0 ${(t-500)/12}px ${tempColor(t)}`:'none';
+    gauge.innerHTML=Math.round(t)+'<small> ℃</small>';
+  },40);
+  function hold(){
+    gauge.innerHTML=target+'<small> ℃ · 유지 '+sim.hold+'분</small>';
+    sparks(8);
+    setTimeout(cool,700);
+  }
+  function cool(){
+    const rate=COOLS[sim.cool].rate;let tt=target;
+    const cd=setInterval(()=>{
+      tt-=Math.max(6,tt*0.03*(0.4+rate));
+      if(tt<=30){tt=25;clearInterval(cd);finish();}
+      piece.style.background=tempColor(tt);
+      piece.style.boxShadow=tt>500?`0 0 ${(tt-500)/12}px ${tempColor(tt)}`:'none';
+      gauge.innerHTML=Math.round(tt)+'<small> ℃ · '+COOLS[sim.cool].n+'</small>';
+    },30);
+  }
+  function finish(){
+    const r=estimateHRC(),m=microOf(r.hrc),st=STEELS[sim.steel];
+    let verdict='';
+    if(sim.steel==='SM45C'){
+      if(sim.cool==='water'&&r.hrc>=48)verdict='<span style="color:var(--ok)">✔ 실기 요구경도(HRC 48↑) 달성!</span>';
+      else if(sim.cool!=='water')verdict='<span style="color:var(--no)">✖ 탄소강은 수냉해야 경도가 충분해요.</span>';
+      else verdict='<span style="color:var(--hot2)">가열온도를 830℃ 부근으로 올려보세요.</span>';
+    }else if(sim.steel==='SCM440'){
+      if((sim.cool==='oil'||sim.cool==='water')&&r.hrc>=46){verdict='<span style="color:var(--ok)">✔ 실기 요구경도(HRC 46↑) 달성!</span>';if(sim.cool==='water')verdict+=' <span style="color:var(--no)">(단, 합금강 수냉은 균열위험)</span>';}
+      else verdict='<span style="color:var(--hot2)">유냉으로 850℃ 부근 가열이 적절합니다.</span>';
+    }else verdict=`<span style="color:var(--sub)">${st.label} 표준 담금질조직입니다.</span>`;
+    $('simResult').innerHTML=`
+      <div class="hrcbig">예상 경도 <span style="color:var(--hot2);font-size:1.4rem">HRC ${r.hrc}</span></div>
+      <div class="microtag" style="background:${m.c}22;color:${m.c};border:1px solid ${m.c}">조직: ${m.n}</div>
+      <div style="color:var(--sub);font-size:.85rem;margin:8px 0">${m.d}</div>
+      <div style="margin-top:6px">${verdict}</div>`;
+    drawDiagram(target,sim.hold,sim.cool);
+    addPts(2);toast('실험 완료 +2 ⭐');
+    simBusy=false;
+  }
+}
+function sparks(n){
+  const f=$('furnace'),rect=f.getBoundingClientRect();
+  for(let i=0;i<n;i++){const s=document.createElement('span');s.className='spark';
+    s.style.left=(40+Math.random()*(rect.width-80))+'px';s.style.top=(rect.height/2)+'px';
+    f.appendChild(s);const dx=(Math.random()-.5)*120,dy=-30-Math.random()*60;
+    s.animate([{transform:'translate(0,0)',opacity:1},{transform:`translate(${dx}px,${dy}px)`,opacity:0}],{duration:600+Math.random()*300,easing:'ease-out'}).onfinish=()=>s.remove();
+  }
+}
+function drawDiagram(temp,hold,cool){
+  const cv=$('diagram'),x=cv.getContext('2d');const W=cv.width,H=cv.height;
+  x.clearRect(0,0,W,H);
+  const padL=44,padB=30,padT=16,padR=14;
+  const x0=padL,x1=W-padR,y0=H-padB,y1=padT;
+  const maxT=1100;
+  const ty=t=>y0-(t/maxT)*(y0-y1);
+  // axes
+  x.strokeStyle='#2f3a48';x.lineWidth=1;x.beginPath();x.moveTo(x0,y1);x.lineTo(x0,y0);x.lineTo(x1,y0);x.stroke();
+  x.fillStyle='#67788c';x.font='11px sans-serif';
+  [200,400,600,800,1000].forEach(t=>{const yy=ty(t);x.fillText(t,6,yy+4);x.strokeStyle='#1f2732';x.beginPath();x.moveTo(x0,yy);x.lineTo(x1,yy);x.stroke();});
+  x.fillText('℃',6,y1+2);x.fillText('시간 →',x1-46,y0+22);
+  // curve: heat (0-40%), hold (40-60%), cool (60-100%)
+  const ax=x0+((x1-x0)*0.05), bx=x0+((x1-x0)*0.40), cx=x0+((x1-x0)*0.60), dx=x1-4;
+  const rate=COOLS[cool].rate;
+  const coolEndX=cx+(dx-cx)*(0.35+0.65*(1-rate)); // faster cool -> shorter horizontal
+  x.strokeStyle='#ff8a3d';x.lineWidth=3;x.lineJoin='round';x.beginPath();
+  x.moveTo(ax,y0);
+  x.lineTo(bx,ty(temp));      // heat up
+  x.lineTo(cx,ty(temp));      // hold
+  x.lineTo(coolEndX,ty(30));  // cool down
+  x.stroke();
+  // labels
+  x.fillStyle='#ffb02e';x.font='bold 11px sans-serif';
+  x.fillText(temp+'℃',(bx+cx)/2-16,ty(temp)-6);
+  x.fillStyle='#9fb0c3';x.fillText('가열',(ax+bx)/2-10,ty(temp/2));
+  x.fillText('유지 '+hold+'분',(bx+cx)/2-18,ty(temp)+16);
+  x.fillStyle=COOLS[cool].c;x.fillText(COOLS[cool].n,(cx+coolEndX)/2-8,ty(temp/2));
+}
+$('diagram').getContext('2d').fillStyle='#67788c';
+
+/* =================== GAME: QUIZ =================== */
+const QBANK={
+cool:[
+ {q:"냉각속도가 가장 빠른 냉각방법은?",o:["노냉","공냉","유냉","수냉"],a:3},
+ {q:"냉각속도가 가장 느린 것은?",o:["수냉","유냉","공냉","노냉"],a:3},
+ {q:"담금질(퀜칭)의 주된 목적은?",o:["재료를 연하게","경도·강도를 높임","색을 바꿈","무게를 줄임"],a:1},
+ {q:"담금질한 강의 취성을 없애고 인성을 주는 열처리는?",o:["뜨임(템퍼링)","풀림","불림","침탄"],a:0},
+ {q:"재료를 연하게 하고 내부응력을 없애며 노냉하는 것은?",o:["담금질","뜨임","풀림(어닐링)","질화"],a:2},
+ {q:"조직을 미세·균일하게 표준화하며 공냉하는 것은?",o:["불림(노멀라이징)","담금질","뜨임","풀림"],a:0},
+ {q:"뜨임 온도를 높이면 경도는?",o:["올라간다","내려간다","변화없다","무한대"],a:1},
+ {q:"냉각이 빠를수록 경도는 일반적으로?",o:["낮아진다","높아진다","일정하다","0이 된다"],a:1},
+],
+micro:[
+ {q:"급냉(담금질)으로 생기는 가장 단단한 조직은?",o:["펄라이트","마르텐사이트","오스테나이트","페라이트"],a:1},
+ {q:"서냉(노냉)으로 생기는 층상 연질조직은?",o:["마르텐사이트","펄라이트","마르텐사이트","시멘타이트"],a:1},
+ {q:"고온에서 안정하며 냉각 전 상태인 조직은?",o:["오스테나이트","마르텐사이트","트루스타이트","펄라이트"],a:0},
+ {q:"경도가 가장 높은 조직은?",o:["소르바이트","펄라이트","마르텐사이트","오스테나이트"],a:2},
+ {q:"강인성이 우수해 구조용에 좋은 뜨임조직은?",o:["소르바이트","마르텐사이트","시멘타이트","페라이트"],a:0},
+ {q:"마르텐사이트의 특징으로 옳은 것은?",o:["매우 연하다","취성이 크다","자성이 없다","서냉조직"],a:1},
+],
+spark:[
+ {q:"불꽃시험에서 파열(꽃가지)이 많아지는 경우는?",o:["탄소량이 많을 때","탄소량이 적을 때","온도가 낮을 때","재료가 얇을 때"],a:0},
+ {q:"불꽃의 파열을 억제하는 성분은?",o:["탄소","합금원소(Cr·Mo·W)","산소","수분"],a:1},
+ {q:"불꽃이 적고 끝에 여우꼬리(적색)가 보이는 강은?",o:["SM45C","SKH51(고속도강)","STC105","순철"],a:1},
+ {q:"불꽃시험으로 주로 판별하는 것은?",o:["재질(강종)","무게","길이","색칠"],a:0},
+ {q:"밝은 주황색 불꽃과 많은 파열은 어떤 강?",o:["고속도강","탄소강","스테인리스","알루미늄"],a:1},
+],
+};
+let Q={list:[],i:0,score:0,combo:0,mode:''};
+function startQuiz(mode){
+  Q={list:shuffle(QBANK[mode]).slice(0,8),i:0,score:0,combo:0,mode};
+  go('play');renderQ();
+}
+function renderQ(){
+  const it=Q.list[Q.i];
+  $('qProg').style.width=(Q.i/Q.list.length*100)+'%';
+  $('qNo').textContent=`${Q.i+1}/${Q.list.length}`;
+  $('qScore').textContent=Q.score;$('qCombo').textContent=Q.combo+'x';
+  $('qText').textContent=it.q;
+  const box=$('qOpts');box.innerHTML='';
+  it.o.forEach((o,idx)=>{const b=document.createElement('button');b.className='opt';b.textContent=o;
+    b.onclick=()=>answerQ(idx,b,it.a);box.appendChild(b);});
+}
+function answerQ(idx,btn,ans){
+  const opts=[...$('qOpts').children];opts.forEach(o=>o.style.pointerEvents='none');
+  if(idx===ans){
+    btn.classList.add('correct');Q.combo++;const gain=10+Math.min(Q.combo-1,5)*2;Q.score+=gain;addPts(2);
+    toast(Q.combo>=3?`🔥 ${Q.combo}콤보! +${gain}`:`정답! +${gain}`);
+  }else{
+    btn.classList.add('wrong');opts[ans].classList.add('correct');Q.combo=0;
+    toast('아쉬워요!');
+  }
+  $('qScore').textContent=Q.score;$('qCombo').textContent=Q.combo+'x';
+  setTimeout(()=>{Q.i++;if(Q.i<Q.list.length)renderQ();else quizDone();},900);
+}
+function quizDone(){
+  $('qProg').style.width='100%';
+  const pct=Math.round(Q.score/(Q.list.length*10)*100);
+  clearBanner(`🎮 ${Q.score}점!`);
+  setTimeout(()=>{
+    $('qText').innerHTML=`<div class="result"><div class="big" style="color:var(--hot2)">${Q.score}점</div>
+      <div class="grade">${pct>=80?'🏆 훌륭해요!':pct>=50?'👍 좋아요!':'💪 다시 도전!'}</div></div>`;
+    $('qOpts').innerHTML='<button class="btn" style="width:100%" onclick="go(\'game\')">다른 게임 하기 →</button>';
+    $('qNo').textContent='완료';
+  },1400);
+}
+
+/* =================== GAME: MATCH =================== */
+const MATCH=[
+ ['SM45C','기계구조용 탄소강(축·기어)'],
+ ['SCM440','크롬-몰리브덴강'],
+ ['STC105','탄소공구강(줄·펀치)'],
+ ['STD11','냉간금형 다이스강'],
+ ['STD61','열간금형강(Cr-Mo-V)'],
+ ['SKH51','고속도공구강(드릴·바이트)'],
+];
+let M={sel:null,done:0,try:0};
+function startMatch(){
+  M={sel:null,done:0,try:0};go('matchplay');
+  const L=shuffle(MATCH),R=shuffle(MATCH);
+  $('mLeft').innerHTML=L.map(p=>`<button class="mitem" data-k="${p[0]}">${p[0]}</button>`).join('');
+  $('mRight').innerHTML=R.map(p=>`<button class="mitem" data-k="${p[0]}">${p[1]}</button>`).join('');
+  $('mDone').textContent='0/6';$('mTry').textContent='0';
+  document.querySelectorAll('#mLeft .mitem,#mRight .mitem').forEach(b=>b.onclick=()=>pickMatch(b));
+}
+function pickMatch(b){
+  const side=b.parentElement.id;
+  if(!M.sel){M.sel=b;b.classList.add('sel');return;}
+  if(M.sel===b){b.classList.remove('sel');M.sel=null;return;}
+  if(M.sel.parentElement.id===side){M.sel.classList.remove('sel');M.sel=b;b.classList.add('sel');return;}
+  // compare
+  M.try++;$('mTry').textContent=M.try;
+  if(M.sel.dataset.k===b.dataset.k){
+    M.sel.classList.add('done');b.classList.add('done');M.sel.classList.remove('sel');
+    M.done++;$('mDone').textContent=M.done+'/6';addPts(3);toast('짝 성공! +3 ⭐');
+    M.sel=null;
+    if(M.done===6)clearBanner('🧩 전부 연결!');
+  }else{
+    const a=M.sel;a.classList.add('wrong');b.classList.add('wrong');a.classList.remove('sel');
+    setTimeout(()=>{a.classList.remove('wrong');b.classList.remove('wrong');},600);
+    M.sel=null;toast('짝이 아니에요');
+  }
+}
+
+/* =================== TEST =================== */
+const TESTBANK=[
+ {q:"열처리의 3요소가 아닌 것은?",o:["가열온도","유지시간","냉각속도","재료 색깔"],a:3},
+ {q:"경도·강도를 높이는 급냉 열처리는?",o:["담금질","풀림","불림","뜨임"],a:0},
+ {q:"담금질 후 취성을 없애는 열처리는?",o:["뜨임","풀림","침탄","질화"],a:0},
+ {q:"노냉으로 재료를 연하게 하는 열처리는?",o:["담금질","불림","풀림","뜨임"],a:2},
+ {q:"공냉으로 조직을 표준화하는 열처리는?",o:["불림","담금질","풀림","뜨임"],a:0},
+ {q:"냉각속도가 가장 빠른 것은?",o:["수냉","유냉","공냉","노냉"],a:0},
+ {q:"가장 단단한 조직은?",o:["마르텐사이트","펄라이트","오스테나이트","페라이트"],a:0},
+ {q:"서냉으로 생기는 층상 연질조직은?",o:["펄라이트","마르텐사이트","트루스타이트","소르바이트"],a:0},
+ {q:"불꽃시험의 목적은?",o:["재질(강종) 판별","경도 측정","길이 측정","무게 측정"],a:0},
+ {q:"탄소량이 많을수록 불꽃의 파열은?",o:["많아진다","적어진다","없어진다","일정"],a:0},
+ {q:"SM45C의 종류는?",o:["기계구조용 탄소강","고속도강","스테인리스","주철"],a:0},
+ {q:"SCM440은 어떤 강인가?",o:["크롬-몰리브덴강","탄소공구강","고속도강","순철"],a:0},
+ {q:"SM45C 담금질 시 알맞은 냉각은?",o:["수냉","노냉","공냉","냉각안함"],a:0},
+ {q:"뜨임 온도를 높이면 경도는?",o:["내려간다","올라간다","변화없다","2배"],a:0},
+ {q:"경도 단위 HRC에서 값이 클수록?",o:["더 단단","더 연함","무게 큼","길이 김"],a:0},
+];
+let T={list:[],i:0,score:0,name:'',cls:'',no:''};
+function initTestForm(){
+  const cs=$('stClass');for(let i=1;i<=6;i++)cs.innerHTML+=`<option value="${i}반">${i}반</option>`;
+  const ng=$('numGrid');for(let i=1;i<=30;i++){const b=document.createElement('button');b.textContent=i;b.onclick=()=>{ng.querySelectorAll('button').forEach(x=>x.classList.remove('on'));b.classList.add('on');T.no=i;};ng.appendChild(b);}
+}
+initTestForm();
+function startTest(){
+  const name=$('stName').value.trim(),cls=$('stClass').value;
+  if(!name){toast('이름을 입력하세요');return;}
+  if(!cls){toast('반을 선택하세요');return;}
+  if(!T.no){toast('번호를 선택하세요');return;}
+  T.name=name;T.cls=cls;
+  T.list=shuffle(TESTBANK);T.i=0;T.score=0;
+  $('testIntro').classList.add('hidden');$('testBox').classList.remove('hidden');
+  renderTest();
+}
+function renderTest(){
+  const it=T.list[T.i];
+  $('tProg').style.width=(T.i/T.list.length*100)+'%';
+  $('tNo').textContent=`${T.i+1}/${T.list.length}`;
+  $('tQ').textContent=it.q;
+  const box=$('tOpts');box.innerHTML='';
+  it.o.forEach((o,idx)=>{const b=document.createElement('button');b.className='opt';b.textContent=o;
+    b.onclick=()=>answerTest(idx,b,it.a);box.appendChild(b);});
+}
+function answerTest(idx,btn,ans){
+  const opts=[...$('tOpts').children];opts.forEach(o=>o.style.pointerEvents='none');
+  if(idx===ans){btn.classList.add('correct');T.score++;}
+  else{btn.classList.add('wrong');opts[ans].classList.add('correct');}
+  setTimeout(()=>{T.i++;if(T.i<T.list.length)renderTest();else testDone();},650);
+}
+function testDone(){
+  const pct=Math.round(T.score/T.list.length*100);
+  const grade=pct>=90?'A · 최우수':pct>=80?'B · 우수':pct>=70?'C · 보통':pct>=60?'D · 노력요함':'F · 재학습';
+  addPts(T.score);
+  $('testBox').classList.add('hidden');
+  const box=$('testResult');box.classList.remove('hidden');
+  const dstr=new Date().toLocaleDateString('ko-KR');
+  box.innerHTML=`
+    <div class="card result">
+      <div style="font-size:1.1rem;color:var(--sub)">점검 완료!</div>
+      <div class="big" style="color:var(--hot2)">${T.score} / ${T.list.length}</div>
+      <div class="grade">${grade}</div>
+    </div>
+    <div id="cardOut">
+      <h3>🔥 열처리 점검 결과카드</h3>
+      <div class="crow"><span>이름</span><b>${T.name}</b></div>
+      <div class="crow"><span>반 / 번호</span><b>${T.cls} ${T.no}번</b></div>
+      <div class="crow"><span>날짜</span><b>${dstr}</b></div>
+      <div class="score">${T.score} / ${T.list.length}점 (${pct}%)</div>
+      <div style="text-align:center;font-weight:800;color:#c0491a">${grade}</div>
+    </div>
+    <div class="row" style="margin-top:14px">
+      <button class="btn blue" style="flex:1" onclick="saveCard()">🖼️ 결과카드 저장(제출)</button>
+      <button class="btn ghost" style="flex:1" onclick="go('home')">홈으로</button>
+    </div>
+    <p class="sectsub" style="margin-top:12px;text-align:center">저장된 이미지를 선생님께 제출하세요.</p>`;
+  confetti();
+  window.scrollTo({top:document.body.scrollHeight,behavior:'smooth'});
+}
+function saveCard(){
+  // render #cardOut to canvas via SVG foreignObject fallback: use html2canvas-free approach -> draw manually
+  const el=$('cardOut');
+  const cv=document.createElement('canvas');const scale=2;cv.width=el.offsetWidth*scale;cv.height=el.offsetHeight*scale;
+  const x=cv.getContext('2d');x.scale(scale,scale);
+  x.fillStyle='#ffffff';x.fillRect(0,0,el.offsetWidth,el.offsetHeight);
+  x.fillStyle='#c0491a';x.font='bold 18px sans-serif';x.fillText('🔥 열처리 점검 결과카드',18,34);
+  x.fillStyle='#0f172a';x.font='14px sans-serif';
+  let y=70;const rows=[['이름',T.name],['반/번호',T.cls+' '+T.no+'번'],['날짜',new Date().toLocaleDateString('ko-KR')]];
+  rows.forEach(r=>{x.fillStyle='#64748b';x.fillText(r[0],18,y);x.fillStyle='#0f172a';x.font='bold 14px sans-serif';x.fillText(r[1],140,y);x.font='14px sans-serif';y+=30;});
+  const pct=Math.round(T.score/T.list.length*100);
+  x.fillStyle='#c0491a';x.font='bold 30px sans-serif';x.textAlign='center';
+  x.fillText(`${T.score} / ${T.list.length}점 (${pct}%)`,el.offsetWidth/2,y+34);x.textAlign='left';
+  const a=document.createElement('a');a.download=`열처리결과_${T.cls}_${T.no}번_${T.name}.png`;a.href=cv.toDataURL('image/png');a.click();
+  toast('결과카드 저장 완료! 제출하세요');
+}
+
+/* =================== FX =================== */
+function clearBanner(txt){
+  const b=document.createElement('div');b.className='clearbanner';
+  b.innerHTML=`<div class="txt">${txt}</div>`;document.body.appendChild(b);
+  confetti();setTimeout(()=>{b.style.opacity='0';setTimeout(()=>b.remove(),300);},1300);
+}
+function confetti(){
+  const cs=['#ff6a2b','#ffb02e','#37d67a','#3aa0ff','#b57cff','#ffd24a'];
+  for(let i=0;i<40;i++){const c=document.createElement('div');c.className='confetti';
+    c.style.left=Math.random()*100+'vw';c.style.background=cs[i%cs.length];
+    c.style.transform=`rotate(${Math.random()*360}deg)`;document.body.appendChild(c);
+    c.animate([{transform:`translateY(0) rotate(0)`,opacity:1},{transform:`translateY(100vh) rotate(${Math.random()*720}deg)`,opacity:.2}],
+      {duration:1600+Math.random()*1200,easing:'cubic-bezier(.3,.8,.6,1)'}).onfinish=()=>c.remove();
+  }
+}
+</script>
+</body>
+</html>
