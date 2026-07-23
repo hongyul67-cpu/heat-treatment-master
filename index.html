@@ -164,6 +164,17 @@ input[type=range]{width:100%;accent-color:var(--hot);height:26px}
 #cardOut .score{font-size:2rem;font-weight:900;color:#c0491a;text-align:center;margin:10px 0}
 .confetti{position:fixed;width:9px;height:14px;top:-20px;z-index:85;pointer-events:none}
 
+/* video */
+.vcard{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:16px;margin-bottom:16px}
+.vcard h3{margin:0 0 4px;font-size:1.1rem;color:var(--hot2)}
+.vcard .fn{color:var(--dim);font-size:.78rem;margin:0 0 10px}
+.vframe{position:relative;width:100%;aspect-ratio:16/9;background:#000;border-radius:10px;overflow:hidden;border:1px solid var(--line)}
+.vframe video,.vframe iframe{width:100%;height:100%;border:0;display:block;background:#000}
+.vmiss{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:6px;color:var(--dim);font-size:.85rem;text-align:center;padding:14px}
+.vlinkrow{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+.vlinkrow input{flex:1;min-width:160px;background:var(--card2);border:1px solid var(--line);border-radius:9px;padding:9px 11px;color:var(--ink);font-size:.85rem;font-family:inherit}
+.vlinkrow button{background:var(--card2);border:1px solid var(--line);border-radius:9px;padding:9px 13px;font-weight:800;font-size:.82rem;color:var(--sub)}
+.vmemo{width:100%;margin-top:10px;background:var(--card2);border:1px solid var(--line);border-radius:9px;padding:11px;color:var(--ink);font-size:.9rem;font-family:inherit;line-height:1.6;resize:vertical;min-height:78px}
 footer{text-align:center;color:var(--dim);font-size:.78rem;padding:24px 0 10px}
 </style>
 </head>
@@ -189,6 +200,11 @@ footer{text-align:center;color:var(--dim);font-size:.78rem;padding:24px 0 10px}
       <span class="tag learn">이론</span>
       <div class="ic">📖</div><h3>배우기</h3>
       <p>4대 열처리·금속조직·불꽃시험·강종·실기조건을 카드로 정리</p>
+    </button>
+    <button class="menu" onclick="go('video')">
+      <span class="tag learn">영상</span>
+      <div class="ic">📺</div><h3>영상 강의</h3>
+      <p>수업 영상 4편 재생 + 유튜브 링크 연결 + 영상별 요약 메모</p>
     </button>
     <button class="menu" onclick="go('sim')">
       <span class="tag sim">보조도구</span>
@@ -252,6 +268,18 @@ footer{text-align:center;color:var(--dim);font-size:.78rem;padding:24px 0 10px}
   </div>
 </section>
 
+<!-- ============ VIDEO ============ -->
+<section id="video" class="view hidden">
+  <button class="back" onclick="go('home')">← 홈</button>
+  <div class="secttl">📺 영상 강의</div>
+  <p class="sectsub">수업 중에는 아래 ▶로 바로 재생돼요(폴더에서 열었을 때). 학생 배포용은 유튜브 링크를 넣으면 됩니다.</p>
+  <div class="note" style="margin-bottom:16px">
+    💡 <b>재생이 안 되면</b> — 온라인(github.io)에서는 큰 영상 파일을 못 올려요.
+    유튜브에 <b>일부공개(링크 아는 사람만)</b>로 올린 뒤, 각 영상의 <b>🔗 링크 연결</b>에 주소를 붙여넣으세요. 한 번 넣으면 이 기기에 저장됩니다.
+  </div>
+  <div id="videoList"></div>
+</section>
+
 <!-- ============ GAME HUB ============ -->
 <section id="game" class="view hidden">
   <button class="back" onclick="go('home')">← 홈</button>
@@ -266,6 +294,9 @@ footer{text-align:center;color:var(--dim);font-size:.78rem;padding:24px 0 10px}
       <div class="ic">🧩</div><h3>강종 짝맞추기</h3><p>강종 기호와 이름·용도 연결</p></button>
     <button class="menu" onclick="startQuiz('spark')">
       <div class="ic">✨</div><h3>불꽃시험 퀴즈</h3><p>불꽃 특징으로 강종 판별</p></button>
+    <button class="menu" onclick="startQuiz('practical')">
+      <span class="tag test">기출</span>
+      <div class="ic">🏭</div><h3>실기 공개문제 퀴즈</h3><p>SM45C·SCM440 요구경도·조건·안전수칙</p></button>
   </div>
 </section>
 
@@ -428,7 +459,8 @@ const learnDone=new Set(JSON.parse(localStorage.getItem('ht_learn')||'[]'));
 function renderLesson(){
   buildLearn();
   const l=LESSONS[curL];
-  $('lessonBox').innerHTML=`<h3>${l.h}</h3>${l.html}`;
+  $('lessonBox').innerHTML=`<h3>${l.h}</h3>${l.html}
+    <button class="btn ghost" style="margin-top:14px;font-size:.85rem;padding:9px 14px" onclick="go('video')">📺 관련 영상 강의 보기 →</button>`;
   if(curL===2)fillSpeedbar();
   const chip=$('learnChips').children[curL];if(chip)chip.scrollIntoView({inline:'center',block:'nearest'});
   $('lprev').disabled=curL===0;$('lprev').style.opacity=curL===0?.4:1;
@@ -444,6 +476,59 @@ $('lnext').onclick=()=>{
 };
 $('lprev').onclick=()=>{if(curL>0){curL--;renderLesson();}};
 renderLesson();
+
+/* =================== VIDEO =================== */
+const VIDEOS=[
+ {file:'열처리1.mp4',title:'1편 · 열처리 기초',memo:'열처리의 의미와 3요소(가열·유지·냉각), 4대 열처리 개요를 설명합니다. (요약을 수업에 맞게 편집하세요)'},
+ {file:'열처리2.mp4',title:'2편 · 담금질과 조직',memo:'담금질(퀜칭)과 냉각속도, 마르텐사이트 등 조직 변화를 다룹니다. (편집 가능)'},
+ {file:'열처리4.mp4',title:'3편 · 뜨임과 경도',memo:'뜨임(템퍼링)으로 인성 회복, 경도(HRC) 측정 관련 내용입니다. (편집 가능)'},
+ {file:'02_01.mp4',title:'4편 · 실기 작업 시연',memo:'불꽃시험·열처리 선도·실기 작업 흐름 시연 영상입니다. (편집 가능)'},
+];
+function ytEmbed(url){
+  const m=url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|shorts\/))([\w-]{11})/);
+  if(m)return 'https://www.youtube.com/embed/'+m[1];
+  return null;
+}
+function vKey(f){return 'ht_vid_'+f;}
+function buildVideos(){
+  const box=$('videoList');box.innerHTML='';
+  VIDEOS.forEach((v,i)=>{
+    const saved=JSON.parse(localStorage.getItem(vKey(v.file))||'{}');
+    const url=saved.url||'';const memo=saved.memo!==undefined?saved.memo:v.memo;
+    const emb=url?ytEmbed(url):null;
+    const card=document.createElement('div');card.className='vcard';
+    let frame;
+    if(emb){frame=`<iframe src="${emb}" allowfullscreen allow="encrypted-media"></iframe>`;}
+    else if(url){frame=`<div class="vmiss">🔗 링크가 유튜브 형식이 아니에요.<br><a href="${url}" target="_blank" style="color:var(--hot2)">새 창에서 열기 →</a></div>`;}
+    else{frame=`<video controls preload="none" src="../${encodeURIComponent(v.file)}"></video>
+      <div class="vmiss" style="pointer-events:none;opacity:.0"></div>`;}
+    card.innerHTML=`
+      <h3>${v.title}</h3>
+      <p class="fn">📁 ${v.file} · 폴더에서 열면 바로 재생</p>
+      <div class="vframe">${frame}</div>
+      <div class="vlinkrow">
+        <input placeholder="유튜브 링크 붙여넣기 (학생 배포용)" value="${url.replace(/"/g,'&quot;')}" data-f="${v.file}" class="vlink">
+        <button class="vsave" data-f="${v.file}">🔗 연결</button>
+        <button class="vclear" data-f="${v.file}">해제</button>
+      </div>
+      <textarea class="vmemo" data-f="${v.file}" placeholder="영상 요약 메모">${memo}</textarea>`;
+    box.appendChild(card);
+  });
+  box.querySelectorAll('.vsave').forEach(b=>b.onclick=()=>{
+    const f=b.dataset.f;const inp=box.querySelector(`.vlink[data-f="${f}"]`);
+    const cur=JSON.parse(localStorage.getItem(vKey(f))||'{}');cur.url=inp.value.trim();
+    localStorage.setItem(vKey(f),JSON.stringify(cur));toast('링크 저장됨');buildVideos();
+  });
+  box.querySelectorAll('.vclear').forEach(b=>b.onclick=()=>{
+    const f=b.dataset.f;const cur=JSON.parse(localStorage.getItem(vKey(f))||'{}');delete cur.url;
+    localStorage.setItem(vKey(f),JSON.stringify(cur));toast('링크 해제됨');buildVideos();
+  });
+  box.querySelectorAll('.vmemo').forEach(t=>t.onchange=()=>{
+    const f=t.dataset.f;const cur=JSON.parse(localStorage.getItem(vKey(f))||'{}');cur.memo=t.value;
+    localStorage.setItem(vKey(f),JSON.stringify(cur));toast('메모 저장됨');
+  });
+}
+buildVideos();
 
 /* =================== SIMULATOR =================== */
 const STEELS={
@@ -605,7 +690,7 @@ cool:[
 ],
 micro:[
  {q:"급냉(담금질)으로 생기는 가장 단단한 조직은?",o:["펄라이트","마르텐사이트","오스테나이트","페라이트"],a:1},
- {q:"서냉(노냉)으로 생기는 층상 연질조직은?",o:["마르텐사이트","펄라이트","마르텐사이트","시멘타이트"],a:1},
+ {q:"서냉(노냉)으로 생기는 층상 연질조직은?",o:["마르텐사이트","펄라이트","오스테나이트","시멘타이트"],a:1},
  {q:"고온에서 안정하며 냉각 전 상태인 조직은?",o:["오스테나이트","마르텐사이트","트루스타이트","펄라이트"],a:0},
  {q:"경도가 가장 높은 조직은?",o:["소르바이트","펄라이트","마르텐사이트","오스테나이트"],a:2},
  {q:"강인성이 우수해 구조용에 좋은 뜨임조직은?",o:["소르바이트","마르텐사이트","시멘타이트","페라이트"],a:0},
@@ -617,6 +702,25 @@ spark:[
  {q:"불꽃이 적고 끝에 여우꼬리(적색)가 보이는 강은?",o:["SM45C","SKH51(고속도강)","STC105","순철"],a:1},
  {q:"불꽃시험으로 주로 판별하는 것은?",o:["재질(강종)","무게","길이","색칠"],a:0},
  {q:"밝은 주황색 불꽃과 많은 파열은 어떤 강?",o:["고속도강","탄소강","스테인리스","알루미늄"],a:1},
+ {q:"불꽃시험 시 시험편 1개당 허용 시간은?",o:["1분 이내","5분","10분","제한없음"],a:0},
+ {q:"불꽃시험편의 규격(지름×길이)은?",o:["∅10×60","∅5×30","∅20×100","∅8×80"],a:0},
+],
+practical:[
+ {q:"열처리기능사 실기 시험시간은?",o:["3시간 30분","1시간","2시간","5시간"],a:0},
+ {q:"SM45C의 퀜칭(담금질) 요구 경도는?",o:["HRC 48 이상","HRC 20 이상","HRC 60 이상","HRC 10 이상"],a:0},
+ {q:"SM45C의 템퍼링(뜨임) 요구 경도 범위는?",o:["HRC 18~30","HRC 48~60","HRC 5~10","HRC 40~50"],a:0},
+ {q:"SCM440의 퀜칭 요구 경도는?",o:["HRC 46 이상","HRC 18 이상","HRC 70 이상","HRC 30 이상"],a:0},
+ {q:"SCM440의 템퍼링 요구 경도 범위는?",o:["HRC 28~39","HRC 5~10","HRC 50~60","HRC 15~20"],a:0},
+ {q:"실기 작업 첫 과제(재질 판별) 방법은?",o:["불꽃시험","무게측정","자석시험","맛보기"],a:0},
+ {q:"경도(HRC)는 퀜칭·템퍼링 후 각각 몇 회 측정?",o:["3회","1회","5회","10회"],a:0},
+ {q:"불꽃시험 예시 강종이 아닌 것은?",o:["A6061(알루미늄)","SM45C","STD11","SKH51"],a:0},
+ {q:"열처리 작업 시험편 규격(t×W×L)은?",o:["t4×30×120","t2×20×80","t10×50×200","t1×10×50"],a:0},
+ {q:"채점에서 '오작'에 해당하는 경우는?",o:["시험편을 석면·철사로 완전히 메워 작업","냉각을 직접 함","선도를 그림","경도 3회 측정"],a:0},
+ {q:"'실격'에 해당하는 경우는?",o:["노내 장입·냉각을 본인이 안 함","답안을 흑색펜으로 씀","불꽃시험 함","정리정돈 함"],a:0},
+ {q:"답안 작성에 사용해야 하는 필기구는?",o:["흑색 필기구","빨간색","연필","청색"],a:0},
+ {q:"담금질용 기름의 다른 이름은?",o:["퀜칭 오일","엔진 오일","식용유","윤활유"],a:0},
+ {q:"철사는 어떤 용도로만 사용하나?",o:["노내 장입·추출(2~4회 감기)","시험편 완전히 감싸기","연마","측정"],a:0},
+ {q:"뜨임 온도를 낮게(저온) 하면 경도는?",o:["높게 유지","0이 됨","무조건 낮아짐","측정불가"],a:0},
 ],
 };
 let Q={list:[],i:0,score:0,combo:0,mode:''};
@@ -712,6 +816,18 @@ const TESTBANK=[
  {q:"SM45C 담금질 시 알맞은 냉각은?",o:["수냉","노냉","공냉","냉각안함"],a:0},
  {q:"뜨임 온도를 높이면 경도는?",o:["내려간다","올라간다","변화없다","2배"],a:0},
  {q:"경도 단위 HRC에서 값이 클수록?",o:["더 단단","더 연함","무게 큼","길이 김"],a:0},
+ {q:"SCM440은 무엇으로 담금질하는 것이 알맞은가?",o:["유냉","수냉만","노냉","냉각안함"],a:0},
+ {q:"합금강을 수냉하면 생길 수 있는 문제는?",o:["균열","연화","색변화","무게증가"],a:0},
+ {q:"열처리 실기 시험시간은?",o:["3시간 30분","1시간","2시간","6시간"],a:0},
+ {q:"불꽃시험으로 판별하는 것은?",o:["재질(강종)","경도","무게","치수"],a:0},
+ {q:"경도(HRC)는 담금질 후 몇 회 측정하는가?",o:["3회","1회","5회","10회"],a:0},
+ {q:"담금질 후 A₁ 이하로 재가열해 인성을 회복하는 것은?",o:["뜨임","풀림","불림","침탄"],a:0},
+ {q:"조직 중 경도가 가장 높은 것은?",o:["마르텐사이트","소르바이트","펄라이트","페라이트"],a:0},
+ {q:"고온에서 안정하며 냉각 전 상태인 조직은?",o:["오스테나이트","마르텐사이트","펄라이트","시멘타이트"],a:0},
+ {q:"SKH51은 어떤 강인가?",o:["고속도공구강","기계구조용 탄소강","주철","알루미늄"],a:0},
+ {q:"채점에서 '오작'인 경우는?",o:["석면·철사로 시험편을 완전히 메워 작업","냉각을 직접 함","불꽃시험 함","정리정돈"],a:0},
+ {q:"답안 작성에 써야 하는 필기구 색은?",o:["흑색","빨강","파랑","연필"],a:0},
+ {q:"열처리 선도에서 냉각선 기울기가 급하면?",o:["급냉(수냉)","서냉(노냉)","가열","유지"],a:0},
 ];
 let T={list:[],i:0,score:0,name:'',cls:'',no:''};
 function initTestForm(){
@@ -725,7 +841,7 @@ function startTest(){
   if(!cls){toast('반을 선택하세요');return;}
   if(!T.no){toast('번호를 선택하세요');return;}
   T.name=name;T.cls=cls;
-  T.list=shuffle(TESTBANK);T.i=0;T.score=0;
+  T.list=shuffle(TESTBANK).slice(0,15);T.i=0;T.score=0;
   $('testIntro').classList.add('hidden');$('testBox').classList.remove('hidden');
   renderTest();
 }
