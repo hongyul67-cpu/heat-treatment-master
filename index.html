@@ -358,10 +358,19 @@ footer{text-align:center;color:var(--dim);font-size:.78rem;padding:24px 0 10px}
 
 <div id="toast"></div>
 
+<!-- 결과 제출 위젯 — 선생님이 ?rc=<Apps Script exec 주소> 를 붙여 나눠주면 그 시트로 제출됨
+     (rc 없이 열면 제출 버튼이 안 보이고, 기존 결과카드 저장 방식은 그대로 동작) -->
+<script src="https://hongyul67-cpu.github.io/links/collector.js"
+        data-tool="열처리 마스터" data-max-num="30"></script>
 <script>
 /* =================== state =================== */
 const S={pts:+(localStorage.getItem('ht_pts')||0)};
 const $=id=>document.getElementById(id);
+/* 선생님 결과수집 주소가 연결됐는지 (연결됐을 때만 제출 버튼 노출) */
+function hasRC(){
+  try{ return !!(window.ResultCollector && ResultCollector.config && ResultCollector.config.endpoint); }
+  catch(e){ return false; }
+}
 function setPts(n){S.pts=Math.max(0,n);$('ptsVal').textContent=S.pts;localStorage.setItem('ht_pts',S.pts);}
 setPts(S.pts);
 function addPts(n){setPts(S.pts+n);}
@@ -840,7 +849,7 @@ function startTest(){
   if(!name){toast('이름을 입력하세요');return;}
   if(!cls){toast('반을 선택하세요');return;}
   if(!T.no){toast('번호를 선택하세요');return;}
-  T.name=name;T.cls=cls;
+  T.name=name;T.cls=cls;T.startedAt=Date.now();
   T.list=shuffle(TESTBANK).slice(0,15);T.i=0;T.score=0;
   $('testIntro').classList.add('hidden');$('testBox').classList.remove('hidden');
   renderTest();
@@ -885,7 +894,19 @@ function testDone(){
       <button class="btn blue" style="flex:1" onclick="saveCard()">🖼️ 결과카드 저장(제출)</button>
       <button class="btn ghost" style="flex:1" onclick="go('home')">홈으로</button>
     </div>
-    <p class="sectsub" style="margin-top:12px;text-align:center">저장된 이미지를 선생님께 제출하세요.</p>`;
+    ${hasRC()?`<button class="btn" id="rcSubmit" style="width:100%;margin-top:10px">📤 선생님 시트로 결과 제출</button>`:''}
+    <p class="sectsub" style="margin-top:12px;text-align:center">${hasRC()
+      ?'위 버튼으로 바로 제출하거나, 결과카드 이미지를 저장해 제출하세요.'
+      :'저장된 이미지를 선생님께 제출하세요.'}</p>`;
+  if(hasRC()){
+    const sb=$('rcSubmit');
+    if(sb) sb.onclick=()=>{
+      ResultCollector.open({
+        score: pct, correct: T.score, total: T.list.length,
+        durationSec: Math.round((Date.now()-(T.startedAt||Date.now()))/1000)
+      });
+    };
+  }
   confetti();
   window.scrollTo({top:document.body.scrollHeight,behavior:'smooth'});
 }
