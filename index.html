@@ -221,6 +221,11 @@ footer{text-align:center;color:var(--dim);font-size:.78rem;padding:24px 0 10px}
       <div class="ic">📝</div><h3>점검·제출</h3>
       <p>15문항 점검 후 이름·반·번호가 담긴 결과카드 저장·제출</p>
     </button>
+    <button class="menu" onclick="go('board')">
+      <span class="tag learn">선생님용</span>
+      <div class="ic">🖥️</div><h3>수업 슬라이드</h3>
+      <p>전자칠판·프로젝터로 앞에서 끌고 가는 화면. 요점 → 발문 → 퀴즈 → 정답을 하나씩 열어요</p>
+    </button>
   </div>
   <footer>열처리기능사(금속열처리작업) 수업용 · 공개문제 SM45C·SCM440 기반</footer>
 </section>
@@ -354,6 +359,14 @@ footer{text-align:center;color:var(--dim);font-size:.78rem;padding:24px 0 10px}
   <div class="hidden" id="testResult"></div>
 </section>
 
+<!-- ============ BOARD (수업 슬라이드) — 예전 board.html 이 여기로 들어왔습니다 ============ -->
+<section id="board" class="view hidden">
+  <button class="back" onclick="go('home')">← 홈</button>
+  <div class="secttl">🖥️ 수업 슬라이드 — 전자칠판·프로젝터로 앞에서 끌고 가는 화면</div>
+  <p class="sectsub">단원을 고르면 슬라이드가 열립니다. <b>요점 → 발문 → 퀴즈 → 정답</b>을 한 단계씩 여세요. (← → 키 또는 화면 아래 버튼)</p>
+  <div id="boardHome"></div>
+</section>
+
 </div><!-- /wrap -->
 
 <div id="toast"></div>
@@ -428,6 +441,8 @@ footer{text-align:center;color:var(--dim);font-size:.78rem;padding:24px 0 10px}
   }, 60);
 })();
 </script>
+<script src="lesson.js"></script>
+<script src="board.js"></script>
 <script>
 /* =================== state =================== */
 const S={pts:+(localStorage.getItem('ht_pts')||0)};
@@ -440,7 +455,17 @@ function hasRC(){
 function setPts(n){S.pts=Math.max(0,n);$('ptsVal').textContent=S.pts;localStorage.setItem('ht_pts',S.pts);}
 setPts(S.pts);
 function addPts(n){setPts(S.pts+n);}
-function go(id){document.querySelectorAll('.view').forEach(v=>v.classList.add('hidden'));$(id).classList.remove('hidden');window.scrollTo(0,0);}
+function go(id){document.querySelectorAll('.view').forEach(v=>v.classList.add('hidden'));$(id).classList.remove('hidden');window.scrollTo(0,0);if(id==='board')openBoardHome();}
+/* 수업 슬라이드 — 예전 board.html 을 이 안으로 들여왔다.
+   원고는 lesson.js, 화면은 board.js(모든 도구 공용)가 담당한다. */
+let boardReady=false;
+function openBoardHome(){
+  if(boardReady)return;
+  const el=$('boardHome');
+  if(!window.Board){el.innerHTML='<p class="sectsub">수업자료를 불러오지 못했습니다.</p>';return;}
+  Board.home(el,{hint:'실기 공개문제(SM45C · SCM440)에서 실제로 요구하는 것을 중심에 두었습니다. 슬라이드 끝의 버튼을 누르면 학생용 게임·점검으로 넘어갑니다(<code>?rc=…</code> 유지).'});
+  boardReady=true;
+}
 function toast(msg){const t=$('toast');t.textContent=msg;t.classList.add('show');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),1400);}
 function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
 
