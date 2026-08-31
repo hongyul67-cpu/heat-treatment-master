@@ -470,6 +470,13 @@ function openBoardHome(){
 }
 function toast(msg){const t=$('toast');t.textContent=msg;t.classList.add('show');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),1400);}
 function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+/* 보기 순서 섞기 — 문제은행의 정답이 첫 번째 보기에 몰려 있어(점검 27문항 중 25개가 첫 칸)
+   문제를 읽지 않고 첫 칸만 눌러도 15문항 중 13개(87%·B)가 나왔다.
+   출제할 때 보기를 섞고 정답 위치를 다시 잡아 준다. */
+function withShuffledOpts(it){
+  const pairs=shuffle(it.o.map((t,i)=>({t,ok:i===it.a})));
+  return Object.assign({},it,{o:pairs.map(p=>p.t),a:pairs.findIndex(p=>p.ok)});
+}
 
 /* =================== LEARN =================== */
 const LESSONS=[
@@ -827,7 +834,7 @@ practical:[
 };
 let Q={list:[],i:0,score:0,combo:0,mode:''};
 function startQuiz(mode){
-  Q={list:shuffle(QBANK[mode]).slice(0,8),i:0,score:0,combo:0,mode};
+  Q={list:shuffle(QBANK[mode]).slice(0,8).map(withShuffledOpts),i:0,score:0,combo:0,mode};
   go('play');renderQ();
 }
 function renderQ(){
@@ -944,7 +951,7 @@ function startTest(){
   if(!cls){toast('반을 선택하세요');return;}
   if(!T.no){toast('번호를 선택하세요');return;}
   T.name=name;T.cls=cls;T.startedAt=Date.now();
-  T.list=shuffle(TESTBANK).slice(0,15);T.i=0;T.score=0;
+  T.list=shuffle(TESTBANK).slice(0,15).map(withShuffledOpts);T.i=0;T.score=0;
   $('testIntro').classList.add('hidden');$('testBox').classList.remove('hidden');
   renderTest();
 }
