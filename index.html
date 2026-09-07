@@ -223,10 +223,10 @@ footer{text-align:center;color:var(--dim);font-size:.78rem;padding:24px 0 10px}
       <div class="ic">📝</div><h3>점검·제출</h3>
       <p>15문항 점검 후 이름·반·번호가 담긴 결과카드 저장·제출</p>
     </button>
-    <button class="menu" onclick="go('board')">
+    <button class="menu" onclick="openBoard()">
       <span class="tag learn">선생님용</span>
-      <div class="ic">🖥️</div><h3>수업 슬라이드</h3>
-      <p>전자칠판·프로젝터로 앞에서 끌고 가는 화면. 요점 → 발문 → 퀴즈 → 정답을 하나씩 열어요</p>
+      <div class="ic">📽️</div><h3>수업 슬라이드 열기</h3>
+      <p>교실 앞 큰 화면으로 끌고 가는 슬라이드. 요점 → 발문 → 퀴즈 → 정답을 하나씩 열어요</p>
     </button>
   </div>
   <footer>열처리기능사(금속열처리작업) 수업용 · 공개문제 SM45C·SCM440 기반</footer>
@@ -361,14 +361,6 @@ footer{text-align:center;color:var(--dim);font-size:.78rem;padding:24px 0 10px}
   <div class="hidden" id="testResult"></div>
 </section>
 
-<!-- ============ BOARD (수업 슬라이드) — 예전 board.html 이 여기로 들어왔습니다 ============ -->
-<section id="board" class="view hidden">
-  <button class="back" onclick="go('home')">← 홈</button>
-  <div class="secttl">🖥️ 수업 슬라이드 — 전자칠판·프로젝터로 앞에서 끌고 가는 화면</div>
-  <p class="sectsub">단원을 고르면 슬라이드가 열립니다. <b>요점 → 발문 → 퀴즈 → 정답</b>을 한 단계씩 여세요. (← → 키 또는 화면 아래 버튼)</p>
-  <div id="boardHome"></div>
-</section>
-
 </div><!-- /wrap -->
 
 <div id="toast"></div>
@@ -443,8 +435,10 @@ footer{text-align:center;color:var(--dim);font-size:.78rem;padding:24px 0 10px}
   }, 60);
 })();
 </script>
+<!-- 수업 슬라이드 — 원고(lesson.js) 는 이 저장소 것, 화면(board-pro.js) 은 links 의 공용 파일이다.
+     저장소에 사본을 두지 않는다. 화면을 고쳐야 하면 links 저장소에서 고친다. -->
 <script src="lesson.js"></script>
-<script src="board.js"></script>
+<script src="https://hongyul67-cpu.github.io/links/board-pro.js"></script>
 <script>
 /* =================== state =================== */
 const S={pts:+(localStorage.getItem('ht_pts')||0)};
@@ -457,16 +451,28 @@ function hasRC(){
 function setPts(n){S.pts=Math.max(0,n);$('ptsVal').textContent=S.pts;localStorage.setItem('ht_pts',S.pts);}
 setPts(S.pts);
 function addPts(n){setPts(S.pts+n);}
-function go(id){document.querySelectorAll('.view').forEach(v=>v.classList.add('hidden'));$(id).classList.remove('hidden');window.scrollTo(0,0);if(id==='board')openBoardHome();}
-/* 수업 슬라이드 — 예전 board.html 을 이 안으로 들여왔다.
-   원고는 lesson.js, 화면은 board.js(모든 도구 공용)가 담당한다. */
-let boardReady=false;
-function openBoardHome(){
-  if(boardReady)return;
-  const el=$('boardHome');
-  if(!window.Board){el.innerHTML='<p class="sectsub">수업자료를 불러오지 못했습니다.</p>';return;}
-  Board.home(el,{hint:'실기 공개문제(SM45C · SCM440)에서 실제로 요구하는 것을 중심에 두었습니다. 슬라이드 끝의 버튼을 누르면 학생용 게임·점검으로 넘어갑니다(<code>?rc=…</code> 유지).'});
-  boardReady=true;
+function go(id){document.querySelectorAll('.view').forEach(v=>v.classList.add('hidden'));$(id).classList.remove('hidden');window.scrollTo(0,0);}
+/* 수업 슬라이드 (선생님용) — 원고는 lesson.js, 화면은 links 의 공용 board-pro.js 다.
+   배우기 카드는 학생이 혼자 폰으로 읽는 것이고, 이쪽은 교실 앞에 띄우는 것이다.
+   둘은 별개의 덱이라 배우기를 지우거나 줄이지 않았다. */
+function openBoard(){
+  const ALL=window.LESSON||[], U=window.UNITS||[];
+  if(!window.BoardPro || !ALL.length){ alert('수업자료를 불러오지 못했습니다. 잠시 뒤 새로고침해 주세요.'); return; }
+  const menu=U.map(u=>({ icon:'🔥', title:u.name,
+    desc:'슬라이드 '+u.idx.length+'장 · '+ALL[u.idx[0]].t,
+    run:{ kind:'lesson', deck:u.idx.map(i=>ALL[i]) } }));
+  menu.push({ icon:'📚', wide:true, title:'전체 이어서 ('+ALL.length+'장)',
+    desc:'①단원부터 ⑤단원까지 순서대로 진행합니다.',
+    run:{ kind:'lesson', deck:ALL } });
+  menu.push({ icon:'⬜', wide:true, title:'빈 칠판',
+    desc:'슬라이드 없이 판서만. 냉각 곡선이나 조직을 직접 그려 설명할 때.',
+    run:{ kind:'blank' } });
+  BoardPro.open({
+    title:'📽️ 열처리 · 수업 슬라이드',
+    sub:'요점 → <b>발문</b> → 퀴즈 → 정답을 하나씩 엽니다. 화면 어디든 바로 판서됩니다.<br>'+
+        '요점 속 <b>파란 빈칸</b>은 눌러야 답이 보입니다. 실기 공개문제(SM45C · SCM440) 기준입니다.',
+    menu: menu
+  });
 }
 function toast(msg){const t=$('toast');t.textContent=msg;t.classList.add('show');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),1400);}
 function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
