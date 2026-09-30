@@ -12,10 +12,17 @@ var C = { ink:'#111827', dim:'#6b7280', red:'#dc2626', blue:'#2563eb',
           green:'#059669', gold:'#b45309', pu:'#7c3aed', hot:'#ea580c' };
 
 function svg(w, h, body){
+  /* 흰 종이 바탕 — 공용 뷰어(board-pro)의 그림 칸이 어두워 바탕이 없으면 검은 글자가 사라진다(그림18) */
   return '<svg viewBox="0 0 ' + w + ' ' + h + '" width="100%" style="max-height:38vh" '
        + 'xmlns="http://www.w3.org/2000/svg" font-family="sans-serif">'
        + '<defs><marker id="ar" markerWidth="9" markerHeight="9" refX="8" refY="3" orient="auto">'
-       + '<path d="M0,0 L8,3 L0,6 z" fill="' + C.ink + '"/></marker></defs>' + body + '</svg>';
+       + '<path d="M0,0 L8,3 L0,6 z" fill="' + C.ink + '"/></marker></defs>'
+       + '<rect x="1" y="1" width="' + (w - 2) + '" height="' + (h - 2) + '" rx="12" fill="#fff" stroke="#e5e7eb" stroke-width="2"/>'
+       + body + '</svg>';
+}
+/* 배우기 화면과 같은 그림 — figs.js(FIGS) 에서 가져온다. 빈칸({{ }})이 있는 장은 정답 이름표를 가린다 */
+function fig(key, noLabel){
+  return window.FIG ? FIG.svgOf(key, noLabel ? { labels:false } : {}) : '';
 }
 function tx(x, y, s, o){
   o = o || {};
@@ -31,27 +38,7 @@ function box(x, y, w, h, fill, stroke){
 var LESSON = [
 {
   u:'① 열처리의 기본', t:'열처리 4형제 — 가열은 같고 냉각이 다르다',
-  svg: svg(520, 265,
-    /* 공통 가열 곡선 */
-    '<path d="M40,200 L120,60 L200,60" fill="none" stroke="' + C.hot + '" stroke-width="3"/>' +
-    tx(150, 48, '가열 · 유지 (약 800~900℃)', {a:'middle', size:13, b:1, c:C.hot}) +
-    /* 냉각 4갈래 */
-    '<path d="M200,60 L245,215" fill="none" stroke="' + C.red + '" stroke-width="3"/>' +
-    '<path d="M200,60 L300,205" fill="none" stroke="' + C.gold + '" stroke-width="3"/>' +
-    '<path d="M200,60 L380,190" fill="none" stroke="' + C.blue + '" stroke-width="3"/>' +
-    '<path d="M200,60 L470,175" fill="none" stroke="' + C.green + '" stroke-width="3"/>' +
-    tx(250, 234, '수냉', {a:'middle', size:13, b:1, c:C.red}) +
-    tx(310, 224, '유냉', {a:'middle', size:13, b:1, c:C.gold}) +
-    tx(392, 208, '공냉', {a:'middle', size:13, b:1, c:C.blue}) +
-    tx(478, 192, '노냉', {a:'end', size:13, b:1, c:C.green}) +
-    tx(250, 254, '담금질', {a:'middle', size:14, b:1}) +
-    tx(320, 254, '(담금질)', {a:'middle', size:12, c:C.dim}) +
-    tx(392, 254, '불림', {a:'middle', size:14, b:1}) +
-    tx(465, 254, '풀림', {a:'middle', size:14, b:1}) +
-    '<line x1="40" y1="215" x2="500" y2="215" stroke="' + C.dim + '" stroke-width="1"/>' +
-    '<line x1="40" y1="215" x2="40" y2="40" stroke="' + C.dim + '" stroke-width="1"/>' +
-    tx(30, 130, '온', {a:'middle', size:12, c:C.dim}) + tx(30, 148, '도', {a:'middle', size:12, c:C.dim}) +
-    tx(500, 232, '시간', {a:'end', size:12, c:C.dim})),
+  svg: fig('four'),
   cap:'같은 온도로 데워도 어떻게 식히느냐에 따라 전혀 다른 재료가 된다',
   pts:[
     '<b>담금질(퀜칭)</b> — 가열 후 <b>물이나 기름에 급랭</b>. 아주 단단해지지만 <b>깨지기 쉽다</b>.',
@@ -71,23 +58,7 @@ var LESSON = [
 
 {
   u:'① 열처리의 기본', t:'왜 800℃ 넘게 데우나 — 변태점',
-  svg: svg(520, 265,
-    '<line x1="60" y1="225" x2="480" y2="225" stroke="' + C.ink + '" stroke-width="1.6"/>' +
-    '<line x1="60" y1="225" x2="60" y2="35" stroke="' + C.ink + '" stroke-width="1.6"/>' +
-    tx(270, 250, '탄소 함유량 (%)  →', {a:'middle', size:12.5, c:C.dim}) +
-    '<text x="26" y="135" font-size="12.5" fill="' + C.dim + '" text-anchor="middle" transform="rotate(-90 26 135)">온도 (℃) →</text>' +
-    /* A3 / A1 선 */
-    '<path d="M75,70 Q180,120 250,150" fill="none" stroke="' + C.red + '" stroke-width="2.6"/>' +
-    '<line x1="75" y1="150" x2="440" y2="150" stroke="' + C.blue + '" stroke-width="2.6"/>' +
-    tx(150, 62, 'A3 선', {size:13, b:1, c:C.red}) +
-    tx(450, 145, 'A1 선 (723℃)', {size:13, b:1, c:C.blue}) +
-    tx(160, 105, '오스테나이트 (γ)', {a:'middle', size:14, b:1, c:C.hot}) +
-    tx(160, 190, '펄라이트 + 페라이트', {a:'middle', size:13, c:C.dim}) +
-    '<circle cx="250" cy="150" r="6" fill="' + C.pu + '"/>' +
-    tx(258, 172, '공석점 0.77% · 723℃', {size:12, c:C.pu, b:1}) +
-    box(60, 30, 420, 0, 'none', 'none') +
-    tx(270, 22, 'A3 선보다 30~50℃ 높게 데워야 완전히 오스테나이트가 된다',
-       {a:'middle', size:14, b:1, c:C.hot})),
+  svg: fig('hentai'),
   cap:'A3 선 위로 올라가야 조직이 전부 오스테나이트로 바뀐다',
   pts:[
     '강을 데우면 어느 온도에서 <b>조직이 통째로 바뀐다</b> — 이 온도를 <b>변태점</b>이라 한다.',
@@ -107,24 +78,7 @@ var LESSON = [
 
 {
   u:'① 열처리의 기본', t:'열처리 선도 — 실기에서 직접 그려야 한다',
-  svg: svg(520, 250,
-    '<line x1="60" y1="200" x2="490" y2="200" stroke="' + C.ink + '" stroke-width="2"/>' +
-    '<line x1="60" y1="200" x2="60" y2="40" stroke="' + C.ink + '" stroke-width="2"/>' +
-    tx(52, 36, '온도', {a:'end', size:12.5, b:1}) +
-    tx(492, 218, '시간', {a:'end', size:12.5, b:1}) +
-    '<line x1="60" y1="80" x2="470" y2="80" stroke="' + C.dim + '" stroke-width="1" stroke-dasharray="4 4"/>' +
-    tx(56, 84, '830℃', {a:'end', size:12, c:C.red}) +
-    '<path d="M60,200 L160,80" fill="none" stroke="' + C.hot + '" stroke-width="3"/>' +
-    '<path d="M160,80 L300,80" fill="none" stroke="' + C.red + '" stroke-width="3"/>' +
-    '<path d="M300,80 L330,196" fill="none" stroke="' + C.blue + '" stroke-width="3"/>' +
-    tx(105, 140, '① 가열', {size:13, b:1, c:C.hot, a:'middle'}) +
-    tx(230, 68, '② 유지', {size:13, b:1, c:C.red, a:'middle'}) +
-    tx(378, 140, '③ 냉각', {size:13, b:1, c:C.blue, a:'middle'}) +
-    '<line x1="160" y1="88" x2="300" y2="88" stroke="' + C.red + '" stroke-width="1" marker-end="url(#ar)"/>' +
-    tx(230, 106, '30분', {size:12, a:'middle', c:C.dim}) +
-    tx(340, 190, '기름', {size:12.5, b:1, c:C.blue}) +
-    box(30, 222, 460, 24, '#eff6ff', C.blue) +
-    tx(260, 239, '온도 · 유지시간 · 냉각방법 — 이 셋이 선도에 다 있어야 한다', {a:'middle', b:1, size:13, c:C.blue})),
+  svg: fig('seondo', 1),
   cap:'답안지에 그리는 선도. 가로는 시간, 세로는 온도',
   pts:[
     '실기에서는 열처리를 하기 <b>전에</b> 선도를 그려 <b>먼저 제출</b>한다. 그리지 못하면 작업을 시작할 수 없다.',
@@ -144,20 +98,7 @@ var LESSON = [
 
 {
   u:'① 열처리의 기본', t:'유지시간 — 속까지 데워져야 한다',
-  svg: svg(520, 240,
-    box(60, 50, 130, 100, '#fde68a', C.gold) +
-    tx(125, 40, '가열 직후', {a:'middle', size:13, b:1}) +
-    tx(125, 105, '겉만 뜨겁다', {a:'middle', size:12.5, c:C.dim}) +
-    '<rect x="95" y="80" width="60" height="40" fill="#93c5fd" stroke="' + C.blue + '"/>' +
-    tx(125, 105, '속 차가움', {a:'middle', size:11.5, c:C.blue}) +
-    '<line x1="205" y1="100" x2="255" y2="100" stroke="' + C.ink + '" stroke-width="2" marker-end="url(#ar)"/>' +
-    tx(230, 90, '유지', {a:'middle', size:12, b:1}) +
-    box(270, 50, 130, 100, '#fca5a5', C.red) +
-    tx(335, 40, '충분히 유지 후', {a:'middle', size:13, b:1}) +
-    tx(335, 105, '속까지 균일', {a:'middle', size:12.5, b:1, c:C.red}) +
-    box(30, 168, 460, 60, '#fef3c7', C.gold) +
-    tx(260, 190, '두께 1mm 당 약 1분 — 시험편 t4 면 최소 4분', {a:'middle', b:1, size:14, c:C.gold}) +
-    tx(260, 212, '실제로는 노 안 온도가 회복되는 시간까지 더해 넉넉히 잡는다', {a:'middle', size:12.5, c:C.dim})),
+  svg: fig('hold'),
   cap:'속이 덜 데워지면 겉만 굳고 속은 무른 채로 남는다',
   pts:[
     '가열은 <b>겉부터</b> 데워진다. 온도계가 830℃를 가리켜도 <b>시편 속은 아직 낮을 수</b> 있다.',
@@ -177,25 +118,7 @@ var LESSON = [
 
 {
   u:'② 조직과 냉각', t:'냉각이 빠를수록 단단하다 — 조직의 순서',
-  svg: svg(520, 260,
-    (function(){
-      var st = [['마르텐사이트', '수냉 (가장 빠름)', 'HRC 60↑', C.red],
-                ['트루스타이트', '유냉', 'HRC 40~50', C.hot],
-                ['소르바이트', '공냉', 'HRC 25~35', C.blue],
-                ['펄라이트', '노냉 (가장 느림)', 'HRC 20 이하', C.green]], o = '';
-      for(var i = 0; i < 4; i++){
-        var y = 34 + i * 52;
-        o += box(30, y, 300, 44, '#f9fafb', st[i][3]);
-        o += tx(46, y + 28, st[i][0], {b:1, size:16, c:st[i][3]});
-        o += tx(318, y + 28, st[i][1], {a:'end', size:12.5, c:C.dim});
-        o += box(345, y, 145, 44, '#f9fafb', st[i][3]);
-        o += tx(417, y + 28, st[i][2], {a:'middle', b:1, size:15, c:st[i][3]});
-      }
-      return o;
-    })() +
-    '<path d="M14,50 L14,230" stroke="' + C.dim + '" stroke-width="2" marker-end="url(#ar)"/>' +
-    tx(260, 254, '마 – 트 – 소 – 펄  순으로 단단한 것에서 무른 것으로',
-       {a:'middle', size:14.5, b:1, c:C.gold})),
+  svg: fig('micro4'),
   cap:'같은 강이라도 냉각 속도만 바꾸면 이 네 가지가 갈린다',
   pts:[
     '냉각이 빠를수록 단단한 조직이 나온다 — <b>마르텐사이트 &gt; 트루스타이트 &gt; 소르바이트 &gt; 펄라이트</b>.',
@@ -285,22 +208,7 @@ var LESSON = [
 
 {
   u:'② 조직과 냉각', t:'질량효과 — 굵으면 속이 안 굳는다',
-  svg: svg(520, 240,
-    '<circle cx="130" cy="110" r="52" fill="#fca5a5" stroke="' + C.red + '" stroke-width="2"/>' +
-    '<circle cx="130" cy="110" r="26" fill="#bfdbfe" stroke="' + C.blue + '" stroke-width="2"/>' +
-    tx(130, 114, '무름', {a:'middle', size:12.5, b:1, c:C.blue}) +
-    tx(130, 182, '굵은 재료', {a:'middle', size:13.5, b:1}) +
-    tx(130, 202, '겉만 굳고 속은 무르다', {a:'middle', size:12, c:C.dim}) +
-    '<circle cx="330" cy="110" r="34" fill="#fca5a5" stroke="' + C.red + '" stroke-width="2"/>' +
-    tx(330, 116, '전부 굳음', {a:'middle', size:12, b:1, c:C.red}) +
-    tx(330, 182, '가는 재료', {a:'middle', size:13.5, b:1}) +
-    tx(330, 202, '속까지 단단', {a:'middle', size:12, c:C.dim}) +
-    box(400, 60, 100, 100, '#f0fdf4', C.green) +
-    tx(450, 92, '합금강은', {a:'middle', size:12.5, b:1, c:C.green}) +
-    tx(450, 114, '속까지', {a:'middle', size:12.5, b:1, c:C.green}) +
-    tx(450, 136, '잘 굳는다', {a:'middle', size:12.5, b:1, c:C.green}) +
-    box(30, 214, 460, 22, '#fef2f2', C.red) +
-    tx(260, 230, '같은 조건이라도 두꺼우면 속은 마르텐사이트가 안 된다', {a:'middle', b:1, size:13, c:C.red})),
+  svg: fig('mass'),
   cap:'표면은 빨리 식지만 속은 천천히 식는다',
   pts:[
     '같은 강, 같은 냉각재라도 <b>재료가 굵으면</b> 속이 천천히 식어 마르텐사이트가 되지 못한다. 이것을 {{질량효과}}라 한다.',
@@ -320,20 +228,7 @@ var LESSON = [
 
 {
   u:'② 조직과 냉각', t:'템퍼링 — 일부러 경도를 낮춘다',
-  svg: svg(520, 245,
-    '<line x1="70" y1="200" x2="470" y2="200" stroke="' + C.ink + '" stroke-width="2"/>' +
-    '<line x1="70" y1="200" x2="70" y2="45" stroke="' + C.ink + '" stroke-width="2"/>' +
-    tx(64, 42, 'HRC', {a:'end', size:12, b:1}) +
-    tx(474, 218, '템퍼링 온도', {a:'end', size:12, b:1}) +
-    '<path d="M80,62 L160,72 L240,100 L320,138 L420,172" fill="none" stroke="' + C.red + '" stroke-width="3"/>' +
-    tx(150, 58, '경도 (내려감)', {size:12.5, b:1, c:C.red}) +
-    '<path d="M80,186 L160,170 L240,140 L320,108 L420,84" fill="none" stroke="' + C.green + '" stroke-width="3" stroke-dasharray="6 4"/>' +
-    tx(360, 76, '인성 (올라감)', {size:12.5, b:1, c:C.green}) +
-    tx(100, 214, '150℃', {a:'middle', size:11.5, c:C.dim}) +
-    tx(250, 214, '400℃', {a:'middle', size:11.5, c:C.dim}) +
-    tx(410, 214, '600℃', {a:'middle', size:11.5, c:C.dim}) +
-    box(30, 226, 460, 18, '#f0fdf4', C.green) +
-    tx(260, 239, '경도를 조금 내주고 잘 안 깨지는 성질을 얻는다', {a:'middle', b:1, size:12.5, c:C.green})),
+  svg: fig('temper', 1),
   cap:'템퍼링 온도가 높을수록 경도는 내려가고 인성은 올라간다',
   pts:[
     '담금질만 한 강은 매우 단단하지만 <b>유리처럼 잘 깨진다</b>. 그대로는 쓸 수 없다.',
@@ -423,20 +318,7 @@ var LESSON = [
 
 {
   u:'③ 강종 판별', t:'불꽃시험 — 6개를 1분 안에 가린다',
-  svg: svg(520, 250,
-    '<circle cx="66" cy="120" r="30" fill="#e5e7eb" stroke="' + C.ink + '" stroke-width="2"/>' +
-    '<circle cx="66" cy="120" r="7" fill="' + C.dim + '"/>' +
-    tx(66, 170, '그라인더', {a:'middle', size:11.5, c:C.dim}) +
-    '<path d="M102,66 L250,52 M102,70 L250,66 M102,74 L250,80" fill="none" stroke="' + C.gold + '" stroke-width="2"/>' +
-    tx(258, 60, '저탄소강 — 곧은 선, 파열 적음', {size:12.5, b:1, c:C.gold}) +
-    '<path d="M102,118 L200,106 M102,122 L200,122 M102,126 L200,138" fill="none" stroke="' + C.hot + '" stroke-width="2"/>' +
-    '<path d="M206,100 L206,116 M198,108 L214,108 M222,118 L222,134 M214,126 L230,126 M204,138 L204,154 M196,146 L212,146" stroke="' + C.red + '" stroke-width="1.6"/>' +
-    tx(258, 122, '고탄소강 — 파열(별)이 많다', {size:12.5, b:1, c:C.red}) +
-    '<path d="M102,168 L176,162 M102,172 L176,172 M102,176 L176,182" fill="none" stroke="' + C.blue + '" stroke-width="2"/>' +
-    tx(258, 176, '스테인리스·합금강 — 짧고 어둡다', {size:12.5, b:1, c:C.blue}) +
-    box(30, 198, 460, 48, '#eff6ff', C.blue) +
-    tx(260, 218, '유선 · 파열 · 색 — 이 셋만 본다', {a:'middle', b:1, size:14, c:C.blue}) +
-    tx(260, 238, '시험편 1개당 1분 이내 · 6개 · 고친 답은 0점', {a:'middle', size:12.5, c:C.red})),
+  svg: fig('spark3', 1),
   cap:'∅10×60 시험편 6개를 순서대로 판별한다',
   pts:[
     '불꽃시험은 그라인더에 시편을 대고 <b>튀는 불꽃 모양</b>으로 강종을 가리는 방법이다.',
@@ -571,25 +453,7 @@ var LESSON = [
 
 {
   u:'④ 실기 시험 대비', t:'경도 측정 — HRC 를 3회 잰다',
-  svg: svg(520, 245,
-    box(60, 40, 400, 96, '#f9fafb', C.dim) +
-    '<path d="M150,60 L150,96 M136,96 L164,96" stroke="' + C.ink + '" stroke-width="2"/>' +
-    '<path d="M150,96 L142,112 L158,112 z" fill="' + C.red + '"/>' +
-    tx(150, 130, '다이아몬드 압입자', {a:'middle', size:11.5, c:C.dim}) +
-    '<rect x="230" y="96" width="180" height="16" fill="#e5e7eb" stroke="' + C.ink + '"/>' +
-    tx(320, 84, '시험편', {a:'middle', size:12, b:1}) +
-    '<circle cx="270" cy="104" r="4" fill="' + C.red + '"/>' +
-    '<circle cx="320" cy="104" r="4" fill="' + C.red + '"/>' +
-    '<circle cx="370" cy="104" r="4" fill="' + C.red + '"/>' +
-    tx(320, 130, '자국은 서로 떨어뜨려 찍는다', {a:'middle', size:11.5, c:C.dim}) +
-    box(30, 150, 225, 82, '#eff6ff', C.blue) +
-    tx(142, 172, 'HRC', {a:'middle', size:16, b:1, c:C.blue}) +
-    tx(142, 194, '다이아몬드 · 굳은 재료', {a:'middle', size:12, c:C.dim}) +
-    tx(142, 218, '담금질한 강에 쓴다', {a:'middle', size:12.5, b:1}) +
-    box(265, 150, 225, 82, '#fef3c7', C.gold) +
-    tx(377, 172, 'HB (브리넬)', {a:'middle', size:16, b:1, c:C.gold}) +
-    tx(377, 194, '강구 · 무른 재료', {a:'middle', size:12, c:C.dim}) +
-    tx(377, 218, '주철·비철에 쓴다', {a:'middle', size:12.5, b:1})),
+  svg: fig('hrc', 1),
   cap:'퀜칭 후 3회, 템퍼링 후 3회 — 표면을 정리하고 잰다',
   pts:[
     '담금질한 강처럼 <b>굳은 재료</b>는 {{HRC}}(로크웰 C)로 잰다. 압입자는 {{다이아몬드}}다.',
