@@ -236,7 +236,7 @@ footer{text-align:center;color:var(--dim);font-size:.78rem;padding:24px 0 10px}
 
 <!-- ============ LEARN ============ -->
 <section id="learn" class="view hidden">
-  <button class="back" onclick="go('home')">← 홈</button>
+  <button class="back" onclick="go('home')">🏠 처음으로</button>
   <div class="secttl">📖 배우기</div>
   <p class="sectsub">주제를 눌러 학습하세요. 다 읽으면 ⭐ 포인트를 받아요.</p>
   <div class="chips" id="learnChips"></div>
@@ -249,7 +249,7 @@ footer{text-align:center;color:var(--dim);font-size:.78rem;padding:24px 0 10px}
 
 <!-- ============ SIMULATOR ============ -->
 <section id="sim" class="view hidden">
-  <button class="back" onclick="go('home')">← 홈</button>
+  <button class="back" onclick="go('home')">🏠 처음으로</button>
   <div class="secttl">🔥 열처리로 시뮬레이터</div>
   <p class="sectsub">수업 시연용. 조건을 바꾸면 조직과 경도가 어떻게 달라지는지 보여줍니다.</p>
   <div class="simgrid">
@@ -279,7 +279,7 @@ footer{text-align:center;color:var(--dim);font-size:.78rem;padding:24px 0 10px}
 
 <!-- ============ VIDEO ============ -->
 <section id="video" class="view hidden">
-  <button class="back" onclick="go('home')">← 홈</button>
+  <button class="back" onclick="go('home')">🏠 처음으로</button>
   <div class="secttl">📺 영상 강의</div>
   <p class="sectsub">수업 중에는 아래 ▶로 바로 재생돼요(폴더에서 열었을 때). 학생 배포용은 유튜브 링크를 넣으면 됩니다.</p>
   <div class="note" style="margin-bottom:16px">
@@ -291,7 +291,7 @@ footer{text-align:center;color:var(--dim);font-size:.78rem;padding:24px 0 10px}
 
 <!-- ============ GAME HUB ============ -->
 <section id="game" class="view hidden">
-  <button class="back" onclick="go('home')">← 홈</button>
+  <button class="back" onclick="go('home')">🏠 처음으로</button>
   <div class="secttl">🎮 훈련 게임</div>
   <p class="sectsub">모드를 골라 도전! 연속 정답이면 콤보 보너스 ⭐</p>
   <div class="grid">
@@ -342,7 +342,7 @@ footer{text-align:center;color:var(--dim);font-size:.78rem;padding:24px 0 10px}
 
 <!-- ============ TEST ============ -->
 <section id="test" class="view hidden">
-  <button class="back" onclick="go('home')">← 홈</button>
+  <button class="back" onclick="go('home')">🏠 처음으로</button>
   <div class="secttl">📝 점검·제출</div>
   <p class="sectsub">15문항을 풀고 결과카드를 저장해 제출하세요.</p>
   <div class="card" id="testIntro">
@@ -1024,7 +1024,7 @@ function testDone(){
     </div>
     <div class="row" style="margin-top:14px">
       <button class="btn blue" style="flex:1" onclick="saveCard()">🖼️ 결과카드 저장(제출)</button>
-      <button class="btn ghost" style="flex:1" onclick="go('home')">홈으로</button>
+      <button class="btn ghost" style="flex:1" onclick="go('home')">🏠 처음으로</button>
     </div>
     ${hasRC()?`<button class="btn" id="rcSubmit" style="width:100%;margin-top:10px">📤 선생님 시트로 결과 제출</button>`:''}
     <p class="sectsub" style="margin-top:12px;text-align:center">${hasRC()
